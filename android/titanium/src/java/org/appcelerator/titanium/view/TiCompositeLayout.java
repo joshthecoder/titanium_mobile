@@ -317,6 +317,17 @@ public class TiCompositeLayout extends ViewGroup
 		setMeasuredDimension(measuredWidth, measuredHeight);
 	}
 
+	@Override
+	public void clearChildFocus(View child)
+	{
+		// When a child is being unfocused (ex: blur()), prevent
+		// any re-focus of the child views in this layout until
+		// the focus clear has finished.
+		setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
+		super.clearChildFocus(child);
+		setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
+	}
+
 	protected void constrainChild(View child, int width, int wMode, int height, int hMode)
 	{
 		LayoutParams p = (LayoutParams) child.getLayoutParams();
