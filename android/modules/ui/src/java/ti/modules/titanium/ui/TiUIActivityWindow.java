@@ -14,14 +14,11 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiActivityWindow;
 import org.appcelerator.titanium.TiActivityWindows;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiBaseActivity;
 import org.appcelerator.titanium.TiC;
-import org.appcelerator.titanium.TiModalActivity;
-import org.appcelerator.titanium.TiTranslucentActivity;
 import org.appcelerator.titanium.proxy.ActivityProxy;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
 import org.appcelerator.titanium.util.TiConvert;
@@ -415,8 +412,8 @@ public class TiUIActivityWindow extends TiUIView
 		if (d.containsKey(TiC.PROPERTY_LAYOUT)) {
 			TiCompositeLayout layout = null;
 
-			if (windowActivity instanceof TiActivity) {
-				layout = ((TiActivity)windowActivity).getLayout();
+			if (windowActivity instanceof TiBaseActivity) {
+				layout = ((TiBaseActivity)windowActivity).getLayout();
 			}
 
 			if (layout != null) {
@@ -506,8 +503,8 @@ public class TiUIActivityWindow extends TiUIView
 		} else if (key.equals(TiC.PROPERTY_LAYOUT)) {
 			TiCompositeLayout layout = null;
 
-			if (windowActivity instanceof TiActivity) {
-				layout = ((TiActivity)windowActivity).getLayout();
+			if (windowActivity instanceof TiBaseActivity) {
+				layout = ((TiBaseActivity)windowActivity).getLayout();
 			}
 
 			if (layout != null) {
@@ -561,7 +558,7 @@ public class TiUIActivityWindow extends TiUIView
 
 	protected Intent createIntent(Activity activity)
 	{
-		Intent intent = new Intent(activity, TiActivity.class);
+		Intent intent = new Intent(activity, TiBaseActivity.class);
 
 		Object fullscreen = proxy.getProperty(TiC.PROPERTY_FULLSCREEN);
 		if (fullscreen != null) {
@@ -579,15 +576,6 @@ public class TiUIActivityWindow extends TiUIView
 		if (modalProperty != null) {
 			modal = TiConvert.toBoolean(modalProperty);
 			intent.putExtra(TiC.PROPERTY_MODAL, modal);
-
-			if (modal) {
-				intent.setClass(activity, TiModalActivity.class);
-			}
-		}
-
-		Object opacity = proxy.getProperty(TiC.PROPERTY_OPACITY);
-		if (opacity != null && !modal) { // modal already translucent
-			intent.setClass(activity, TiTranslucentActivity.class);
 		}
 
 		Object url = proxy.getProperty(TiC.PROPERTY_URL);
