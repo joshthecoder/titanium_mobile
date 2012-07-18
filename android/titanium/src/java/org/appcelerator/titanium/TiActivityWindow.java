@@ -19,5 +19,5 @@ package org.appcelerator.titanium;
  */
 public interface TiActivityWindow
 {
-	public void windowCreated(TiBaseActivity activity);
+	public void windowCreated(TiActivity activity);
 }

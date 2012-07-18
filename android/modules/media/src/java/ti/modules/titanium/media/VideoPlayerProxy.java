@@ -15,7 +15,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.TiLifecycle;
@@ -92,15 +92,15 @@ public class VideoPlayerProxy extends TiViewProxy implements TiLifecycle.OnLifec
 		super.setActivity(activity);
 		if (activityListeningTo != null) {
 			Activity oldActivity = activityListeningTo.get();
-			if (oldActivity instanceof TiBaseActivity) {
-				((TiBaseActivity) oldActivity).removeOnLifecycleEventListener(this);
+			if (oldActivity instanceof TiActivity) {
+				((TiActivity) oldActivity).removeOnLifecycleEventListener(this);
 			} else if (oldActivity instanceof TiVideoActivity) {
 				((TiVideoActivity) oldActivity).setOnLifecycleEventListener(null);
 			}
 			activityListeningTo = null;
 		}
-		if (activity instanceof TiBaseActivity) {
-			((TiBaseActivity) activity).addOnLifecycleEventListener(this);
+		if (activity instanceof TiActivity) {
+			((TiActivity) activity).addOnLifecycleEventListener(this);
 			activityListeningTo = new WeakReference<Activity>(activity);
 		} else if (activity instanceof TiVideoActivity) {
 			((TiVideoActivity) activity).setOnLifecycleEventListener(this);

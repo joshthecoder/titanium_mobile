@@ -17,7 +17,7 @@ import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiActivityWindow;
 import org.appcelerator.titanium.TiActivityWindows;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.proxy.ActivityProxy;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
@@ -82,12 +82,12 @@ public class TiUIActivityWindow extends TiUIView
 		createNewActivity(options);
 	}
 
-	public TiUIActivityWindow(ActivityWindowProxy proxy, TiBaseActivity activity)
+	public TiUIActivityWindow(ActivityWindowProxy proxy, TiActivity activity)
 	{
 		this(proxy, activity, null, -1);
 	}
 
-	public TiUIActivityWindow(ActivityWindowProxy proxy, TiBaseActivity activity, Messenger messenger, int messageId)
+	public TiUIActivityWindow(ActivityWindowProxy proxy, TiActivity activity, Messenger messenger, int messageId)
 	{
 		super(proxy);
 		windowActivity = activity;
@@ -128,7 +128,7 @@ public class TiUIActivityWindow extends TiUIView
 		}
 	}
 
-	public void windowCreated(TiBaseActivity activity)
+	public void windowCreated(TiActivity activity)
 	{
 		// This is the callback when any "heavy weight" (i.e. activity) window
 		// (except for windows associated with a tab) is created.
@@ -164,8 +164,8 @@ public class TiUIActivityWindow extends TiUIView
 
 	protected void bindProxies()
 	{
-		if (windowActivity instanceof TiBaseActivity) {
-			TiBaseActivity tiActivity = (TiBaseActivity)windowActivity;
+		if (windowActivity instanceof TiActivity) {
+			TiActivity tiActivity = (TiActivity)windowActivity;
 			TiWindowProxy windowProxy = (TiWindowProxy)proxy;
 
 			ActivityProxy activityProxy = windowProxy.getActivityProxy();
@@ -206,7 +206,7 @@ public class TiUIActivityWindow extends TiUIView
 			}
 		}
 
-		if (windowActivity != null && windowActivity instanceof TiBaseActivity) {
+		if (windowActivity != null && windowActivity instanceof TiActivity) {
 			layout.requestFocus();
 		}
 	}
@@ -289,7 +289,7 @@ public class TiUIActivityWindow extends TiUIView
 
 	public View getLayout()
 	{
-		TiBaseActivity tia = (TiBaseActivity) windowActivity;
+		TiActivity tia = (TiActivity) windowActivity;
 		if (tia == null) {
 			return null;
 		}
@@ -412,8 +412,8 @@ public class TiUIActivityWindow extends TiUIView
 		if (d.containsKey(TiC.PROPERTY_LAYOUT)) {
 			TiCompositeLayout layout = null;
 
-			if (windowActivity instanceof TiBaseActivity) {
-				layout = ((TiBaseActivity)windowActivity).getLayout();
+			if (windowActivity instanceof TiActivity) {
+				layout = ((TiActivity)windowActivity).getLayout();
 			}
 
 			if (layout != null) {
@@ -503,8 +503,8 @@ public class TiUIActivityWindow extends TiUIView
 		} else if (key.equals(TiC.PROPERTY_LAYOUT)) {
 			TiCompositeLayout layout = null;
 
-			if (windowActivity instanceof TiBaseActivity) {
-				layout = ((TiBaseActivity)windowActivity).getLayout();
+			if (windowActivity instanceof TiActivity) {
+				layout = ((TiActivity)windowActivity).getLayout();
 			}
 
 			if (layout != null) {
@@ -558,7 +558,7 @@ public class TiUIActivityWindow extends TiUIView
 
 	protected Intent createIntent(Activity activity)
 	{
-		Intent intent = new Intent(activity, TiBaseActivity.class);
+		Intent intent = new Intent(activity, TiActivity.class);
 
 		Object fullscreen = proxy.getProperty(TiC.PROPERTY_FULLSCREEN);
 		if (fullscreen != null) {

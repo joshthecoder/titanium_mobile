@@ -10,7 +10,7 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollFunction;
 import org.appcelerator.kroll.KrollObject;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.proxy.TiViewProxy;
@@ -33,7 +33,7 @@ import android.view.SurfaceView;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
-public class TiCameraActivity extends TiBaseActivity implements SurfaceHolder.Callback {
+public class TiCameraActivity extends TiActivity implements SurfaceHolder.Callback {
 	private static final String LCAT = "TiCameraActivity";
 	private static Camera camera;
 

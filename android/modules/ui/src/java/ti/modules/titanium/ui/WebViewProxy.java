@@ -9,7 +9,7 @@ package ti.modules.titanium.ui;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
@@ -58,7 +58,7 @@ public class WebViewProxy extends ViewProxy
 	@Override
 	public TiUIView createView(Activity activity)
 	{
-		((TiBaseActivity)activity).addOnLifecycleEventListener(this);
+		((TiActivity)activity).addOnLifecycleEventListener(this);
 		TiUIWebView webView = new TiUIWebView(this);
 		webView.focus();
 

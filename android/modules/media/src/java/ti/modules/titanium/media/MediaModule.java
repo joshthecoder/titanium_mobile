@@ -28,7 +28,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.ContextSpecific;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.io.TiBaseFile;
@@ -285,12 +285,12 @@ public class MediaModule extends KrollModule
 	 */
 	private class CallbackWrapper
 	{
-		public TiBaseActivity callbackActivity;
+		public TiActivity callbackActivity;
 		public KrollFunction callback;
 		public KrollObject krollObject;
 		public KrollDict callbackArgs;
 
-		CallbackWrapper(TiBaseActivity callbackActivity, KrollFunction callback, KrollObject krollObject, KrollDict callbackArgs)
+		CallbackWrapper(TiActivity callbackActivity, KrollFunction callback, KrollObject krollObject, KrollDict callbackArgs)
 		{
 			this.callbackActivity = callbackActivity;
 			this.callback = callback;
@@ -339,7 +339,7 @@ public class MediaModule extends KrollModule
 		return imageFile;
 	}
 
-	private void invokeCallback(TiBaseActivity callbackActivity, KrollFunction callback, KrollObject krollObject, KrollDict callbackArgs)
+	private void invokeCallback(TiActivity callbackActivity, KrollFunction callback, KrollObject krollObject, KrollDict callbackArgs)
 	{
 		if (KrollRuntime.getInstance().isRuntimeThread()) {
 			doInvokeCallback(callbackActivity, callback, krollObject, callbackArgs);
@@ -351,7 +351,7 @@ public class MediaModule extends KrollModule
 		}
 	}
 
-	private void doInvokeCallback(TiBaseActivity callbackActivity, KrollFunction callback, KrollObject krollObject, KrollDict callbackArgs)
+	private void doInvokeCallback(TiActivity callbackActivity, KrollFunction callback, KrollObject krollObject, KrollDict callbackArgs)
 	{
 		if (callbackActivity.isResumed) {
 			callback.callAsync(krollObject, callbackArgs);
@@ -416,14 +416,14 @@ public class MediaModule extends KrollModule
 
 					try {
 						if (successCallback != null) {
-							invokeCallback((TiBaseActivity) activity, successCallback, getKrollObject(), createDictForImage(imageFile.getAbsolutePath(), "image/jpeg"));
+							invokeCallback((TiActivity) activity, successCallback, getKrollObject(), createDictForImage(imageFile.getAbsolutePath(), "image/jpeg"));
 						}
 
 					} catch (OutOfMemoryError e) {
 						String msg = "Not enough memory to get image: " + e.getMessage();
 						Log.e(LCAT, msg);
 						if (errorCallback != null) {
-							invokeCallback((TiBaseActivity) activity, errorCallback, getKrollObject(), createErrorResponse(UNKNOWN_ERROR, msg));
+							invokeCallback((TiActivity) activity, errorCallback, getKrollObject(), createErrorResponse(UNKNOWN_ERROR, msg));
 						}
 					}
 
@@ -545,14 +545,14 @@ public class MediaModule extends KrollModule
 					
 					try {
 						if (successCallback != null) {
-							invokeCallback((TiBaseActivity) activity, successCallback, getKrollObject(), createDictForImage(localImageUrl, "image/jpeg"));
+							invokeCallback((TiActivity) activity, successCallback, getKrollObject(), createDictForImage(localImageUrl, "image/jpeg"));
 						}
 
 					} catch (OutOfMemoryError e) {
 						String msg = "Not enough memory to get image: " + e.getMessage();
 						Log.e(LCAT, msg);
 						if (errorCallback != null) {
-							invokeCallback((TiBaseActivity) activity, errorCallback, getKrollObject(), createErrorResponse(UNKNOWN_ERROR, msg));
+							invokeCallback((TiActivity) activity, errorCallback, getKrollObject(), createErrorResponse(UNKNOWN_ERROR, msg));
 						}
 					}
 				}

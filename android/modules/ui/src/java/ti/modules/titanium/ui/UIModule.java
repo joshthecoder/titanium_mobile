@@ -11,7 +11,7 @@ import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.TiDimension;
@@ -240,7 +240,7 @@ public class UIModule extends KrollModule implements Handler.Callback
 	protected void doSetOrientation(int tiOrientationMode)
 	{
 		Activity activity = TiApplication.getInstance().getCurrentActivity();
-		if (activity instanceof TiBaseActivity)
+		if (activity instanceof TiActivity)
 		{
 			int[] orientationModes;
 
@@ -254,7 +254,7 @@ public class UIModule extends KrollModule implements Handler.Callback
 			}
 
 			// this should only be entered if a LW window is created on top of the root activity
-			TiBaseActivity tiBaseActivity = (TiBaseActivity)activity;
+			TiActivity tiBaseActivity = (TiActivity)activity;
 			TiWindowProxy windowProxy = tiBaseActivity.getWindowProxy();
 
 			if (windowProxy == null)

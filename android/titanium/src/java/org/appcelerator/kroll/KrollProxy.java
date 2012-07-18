@@ -20,7 +20,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.proxy.ActivityProxy;
@@ -751,8 +751,8 @@ public class KrollProxy implements Handler.Callback, KrollProxySupport
 	public ActivityProxy getActivityProxy()
 	{
 		Activity activity = getActivity();
-		if (activity instanceof TiBaseActivity) {
-			return ((TiBaseActivity) activity).getActivityProxy();
+		if (activity instanceof TiActivity) {
+			return ((TiActivity) activity).getActivityProxy();
 		}
 
 		return null;

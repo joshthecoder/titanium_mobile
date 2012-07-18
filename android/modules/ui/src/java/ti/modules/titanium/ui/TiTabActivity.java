@@ -11,7 +11,7 @@ import org.appcelerator.kroll.KrollRuntime;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiActivityWindows;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiRootActivity;
 import org.appcelerator.titanium.view.TiCompositeLayout;
@@ -59,7 +59,7 @@ public class TiTabActivity extends TabActivity
 			return;
 		}
 
-		if (TiBaseActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
+		if (TiActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
 			Log.w(LCAT, "Unsupported, out-of-order activity creation. Finishing.");
 			super.onCreate(savedInstanceState);
 			tiApp.scheduleRestart(250);
@@ -301,7 +301,7 @@ public class TiTabActivity extends TabActivity
 	public void onConfigurationChanged(Configuration newConfig)
 	{
 		super.onConfigurationChanged(newConfig);
-		TiBaseActivity.callOrientationChangedListener(newConfig);
+		TiActivity.callOrientationChangedListener(newConfig);
 	}
 	
 	private boolean shouldFinishRootActivity()

@@ -10,7 +10,7 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiDimension;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
@@ -99,8 +99,8 @@ public class TiUITableView extends TiUIView
 			tableView = new TiTableView((TableViewProxy) proxy);
 		}
 		Activity activity = proxy.getActivity();
-		if (activity instanceof TiBaseActivity) {
-			((TiBaseActivity) activity).addOnLifecycleEventListener(this);
+		if (activity instanceof TiActivity) {
+			((TiActivity) activity).addOnLifecycleEventListener(this);
 		}
 
 		tableView.setOnItemClickListener(this);
@@ -189,7 +189,7 @@ public class TiUITableView extends TiUIView
 			tableView  = null;
 		}
 		if (proxy != null && proxy.getActivity() != null) {
-			((TiBaseActivity)proxy.getActivity()).removeOnLifecycleEventListener(this);
+			((TiActivity)proxy.getActivity()).removeOnLifecycleEventListener(this);
 		}
 		nativeView  = null;
 		super.release();

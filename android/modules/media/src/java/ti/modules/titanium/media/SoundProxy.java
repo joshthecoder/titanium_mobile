@@ -11,7 +11,7 @@ import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
@@ -51,7 +51,7 @@ public class SoundProxy extends KrollProxy
 	@Override
 	protected void initActivity(Activity activity) {
 		super.initActivity(activity);
-		((TiBaseActivity)activity).addOnLifecycleEventListener(this);
+		((TiActivity)activity).addOnLifecycleEventListener(this);
 	}
 
 	private String parseURL(Object url)

@@ -16,7 +16,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.proxy.TiBaseWindowProxy;
@@ -195,7 +195,7 @@ public class TabGroupProxy extends TiWindowProxy
 				tspec.setIndicator(title, icon);
 			}
 
-			Intent intent = new Intent(tta, TiBaseActivity.class);
+			Intent intent = new Intent(tta, TiActivity.class);
 			windowProxy.setParent(tab);
 			windowProxy.fillIntentForTab(intent, tab);
 			

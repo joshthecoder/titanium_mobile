@@ -11,7 +11,7 @@ import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiLaunchActivity;
 import org.appcelerator.titanium.proxy.TiViewProxy;
@@ -201,8 +201,8 @@ public class TiUIActivityIndicator extends TiUIView
 					a = TiApplication.getInstance().getRootActivity();
 				}
 				progressDialog = new ProgressDialog(a);
-				if (a instanceof TiBaseActivity) {
-					((TiBaseActivity) a).addDialog(progressDialog);
+				if (a instanceof TiActivity) {
+					((TiActivity) a).addDialog(progressDialog);
 					progressDialog.setOwnerActivity(a);
 				}
 				progressDialog.setOnCancelListener(this);
@@ -244,7 +244,7 @@ public class TiUIActivityIndicator extends TiUIView
 		if (progressDialog != null) {
 			Activity ownerActivity = progressDialog.getOwnerActivity();
 			if (ownerActivity != null && !ownerActivity.isFinishing()) {
-				((TiBaseActivity)ownerActivity).removeDialog(progressDialog);
+				((TiActivity)ownerActivity).removeDialog(progressDialog);
 				progressDialog.dismiss();
 			}
 			progressDialog = null;

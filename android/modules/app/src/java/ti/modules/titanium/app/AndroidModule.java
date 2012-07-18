@@ -11,7 +11,7 @@ import org.appcelerator.kroll.KrollRuntime;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.proxy.ActivityProxy;
 import org.appcelerator.titanium.proxy.RProxy;
@@ -55,7 +55,7 @@ public class AndroidModule extends KrollModule
 		}
 		TiApplication tiApp = TiApplication.getInstance();
 		Activity activity = tiApp.getCurrentActivity();
-		if (activity == null || !(activity instanceof TiBaseActivity)) {
+		if (activity == null || !(activity instanceof TiActivity)) {
 			try {
 				tiApp.rootActivityLatch.await();
 				activity = tiApp.getRootActivity();
@@ -64,8 +64,8 @@ public class AndroidModule extends KrollModule
 			}
 		}
 
-		if (activity instanceof TiBaseActivity) {
-			return ((TiBaseActivity)activity).getActivityProxy();
+		if (activity instanceof TiActivity) {
+			return ((TiActivity)activity).getActivityProxy();
 		} else {
 			return null;
 		}

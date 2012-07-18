@@ -8,7 +8,7 @@ package org.appcelerator.titanium.proxy;
 
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.util.TiOrientationHelper;
 import org.appcelerator.titanium.view.TiCompositeLayout;
 import org.appcelerator.titanium.view.TiUIDecorView;
@@ -170,9 +170,9 @@ public class DecorViewProxy extends TiViewProxy
 			Activity activity = getActivity();
 			if (activity != null)
 			{
-				if (activity instanceof TiBaseActivity)
+				if (activity instanceof TiActivity)
 				{
-					activity.setRequestedOrientation(((TiBaseActivity)activity).getOriginalOrientationMode());
+					activity.setRequestedOrientation(((TiActivity)activity).getOriginalOrientationMode());
 				}
 			}
 		}

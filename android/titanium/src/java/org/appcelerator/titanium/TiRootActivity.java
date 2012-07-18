@@ -85,7 +85,7 @@ public class TiRootActivity extends TiLaunchActivity
 			return;
 		}
 
-		if (tiApp.isRestartPending() || TiBaseActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
+		if (tiApp.isRestartPending() || TiActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
 			super.onCreate(savedInstanceState); // Will take care of scheduling restart and finishing.
 			return;
 		}

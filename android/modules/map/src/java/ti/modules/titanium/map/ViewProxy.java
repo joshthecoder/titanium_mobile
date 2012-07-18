@@ -13,7 +13,7 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
@@ -81,7 +81,7 @@ public class ViewProxy extends TiViewProxy implements OnLifecycleEvent
 			setActivity(activity);
 		}
 
-		((TiBaseActivity) activity).addOnLifecycleEventListener(this);
+		((TiActivity) activity).addOnLifecycleEventListener(this);
 
 		destroyed = false;
 		if (lam == null) {

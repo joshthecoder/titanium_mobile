@@ -13,7 +13,7 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
 import org.appcelerator.titanium.util.TiActivitySupport;
@@ -75,13 +75,13 @@ public class ActivityProxy extends KrollProxy
 	{
 		if (savedDecorViewProxy == null) {
 			Activity activity = getActivity();
-			if (!(activity instanceof TiBaseActivity)) {
+			if (!(activity instanceof TiActivity)) {
 				Log.e(TAG, "unable to return decor view, activity is not TiBaseActivity");
 
 				return null;
 			}
 
-			DecorViewProxy decorViewProxy = new DecorViewProxy(((TiBaseActivity)activity).getLayout());
+			DecorViewProxy decorViewProxy = new DecorViewProxy(((TiActivity)activity).getLayout());
 			decorViewProxy.setActivity(activity);
 			savedDecorViewProxy = decorViewProxy;
 		}
@@ -212,11 +212,11 @@ public class ActivityProxy extends KrollProxy
 	public TiWindowProxy getWindow()
 	{
 		Activity activity = getWrappedActivity();
-		if (!(activity instanceof TiBaseActivity)) {
+		if (!(activity instanceof TiActivity)) {
 			return null;
 		}
 
-		TiBaseActivity tiActivity = (TiBaseActivity) activity;
+		TiActivity tiActivity = (TiActivity) activity;
 		return tiActivity.getWindowProxy();
 	}
 

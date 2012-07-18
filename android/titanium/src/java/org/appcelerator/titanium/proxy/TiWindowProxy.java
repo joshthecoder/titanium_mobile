@@ -19,7 +19,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiOrientationHelper;
@@ -358,9 +358,9 @@ public abstract class TiWindowProxy extends TiViewProxy
 			Activity activity = getActivity();
 			if (activity != null)
 			{
-				if (activity instanceof TiBaseActivity)
+				if (activity instanceof TiActivity)
 				{
-					activity.setRequestedOrientation(((TiBaseActivity)activity).getOriginalOrientationMode());
+					activity.setRequestedOrientation(((TiActivity)activity).getOriginalOrientationMode());
 				}
 			}
 		}

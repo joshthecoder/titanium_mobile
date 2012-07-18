@@ -48,14 +48,11 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
-/**
- * The base class for all non tab Titanium activities. To learn more about Activities, see the
- * <a href="http://developer.android.com/reference/android/app/Activity.html">Android Activity documentation</a>.
- */
-public abstract class TiBaseActivity extends Activity 
-	implements TiActivitySupport/*, ITiWindowHandler*/
+
+public class TiActivity extends Activity 
+	implements TiActivitySupport
 {
-	private static final String TAG = "TiBaseActivity";
+	private static final String TAG = "TiActivity";
 	private static final boolean DBG = TiConfig.LOGD;
 
 	private static OrientationChangedListener orientationChangedListener = null;
@@ -127,7 +124,7 @@ public abstract class TiBaseActivity extends Activity
 
 	public static interface ConfigurationChangedListener
 	{
-		public void onConfigurationChanged(TiBaseActivity activity, Configuration newConfig);
+		public void onConfigurationChanged(TiActivity activity, Configuration newConfig);
 	}
 
 	/**
@@ -389,7 +386,7 @@ public abstract class TiBaseActivity extends Activity
 			return;
 		}
 
-		if (TiBaseActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
+		if (TiActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
 			Log.w(TAG, "Unsupported, out-of-order activity creation. Finishing.");
 			super.onCreate(savedInstanceState);
 			tiApp.scheduleRestart(250);

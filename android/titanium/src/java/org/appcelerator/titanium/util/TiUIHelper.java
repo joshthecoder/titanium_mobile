@@ -28,7 +28,7 @@ import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiFastDev;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiBlob;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiDimension;
@@ -190,7 +190,7 @@ public class TiUIHelper
 					Activity ownerActivity = ((AlertDialog)dialog).getOwnerActivity();
 					//if activity is not finishing, remove dialog to free memory
 					if (ownerActivity != null && !ownerActivity.isFinishing()) {
-						((TiBaseActivity)ownerActivity).removeDialog((AlertDialog)dialog);
+						((TiActivity)ownerActivity).removeDialog((AlertDialog)dialog);
 					}
 				}};
 		}
@@ -204,8 +204,8 @@ public class TiUIHelper
 					AlertDialog dialog = new AlertDialog.Builder(activity).setTitle(title).setMessage(message)
 							.setPositiveButton(android.R.string.ok, fListener)
 							.setCancelable(false).create();
-					if (activity instanceof TiBaseActivity) {
-						((TiBaseActivity)activity).addDialog(dialog);
+					if (activity instanceof TiActivity) {
+						((TiActivity)activity).addDialog(dialog);
 						dialog.setOwnerActivity(activity);
 					}
 					dialog.show();

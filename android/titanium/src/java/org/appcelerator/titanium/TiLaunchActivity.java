@@ -35,7 +35,7 @@ import android.widget.Toast;
  * Titanium launch activities have a single TiContext and launch an associated
  * Javascript URL during onCreate()
  */
-public abstract class TiLaunchActivity extends TiBaseActivity
+public abstract class TiLaunchActivity extends TiActivity
 {
 	private static final String TAG = "TiLaunchActivity";
 	private static final boolean DBG = TiConfig.LOGD;
@@ -136,7 +136,7 @@ public abstract class TiLaunchActivity extends TiBaseActivity
 
 		if (!tiApp.isRestartPending()) {
 			// Check for a system application restart that we can't support.
-			if (TiBaseActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
+			if (TiActivity.isUnsupportedReLaunch(this, savedInstanceState)) {
 				super.onCreate(savedInstanceState); // Will take care of scheduling restart and finishing.
 				return;
 			}

@@ -18,7 +18,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.ContextSpecific;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiProperties;
 import org.appcelerator.titanium.util.TiOrientationHelper;
 import org.appcelerator.titanium.util.TiSensorHelper;
@@ -73,7 +73,7 @@ public class GestureModule extends KrollModule
 		{
 			if (orientationConfigListeners.size() == 0)
 			{
-				TiBaseActivity.registerOrientationListener (new TiBaseActivity.OrientationChangedListener()
+				TiActivity.registerOrientationListener (new TiActivity.OrientationChangedListener()
 				{
 					@Override
 					public void onOrientationChanged (int configOrientationMode)
@@ -107,7 +107,7 @@ public class GestureModule extends KrollModule
 				orientationConfigListeners.remove (proxy);
 				if (orientationConfigListeners.size() == 0)
 				{
-					TiBaseActivity.deregisterOrientationListener();
+					TiActivity.deregisterOrientationListener();
 				}
 			}
 			else

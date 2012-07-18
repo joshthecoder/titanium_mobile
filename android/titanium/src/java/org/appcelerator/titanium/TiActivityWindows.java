@@ -24,7 +24,7 @@ public class TiActivityWindows
 		return windowId;
 	}
 
-	public static void windowCreated(TiBaseActivity activity, int windowId)
+	public static void windowCreated(TiActivity activity, int windowId)
 	{
 		TiActivityWindow window = windows.get(windowId);
 		if (window != null) {

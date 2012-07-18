@@ -24,7 +24,7 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiDimension;
 import org.appcelerator.titanium.util.TiAnimationBuilder;
@@ -426,7 +426,7 @@ public abstract class TiViewProxy extends KrollProxy implements Handler.Callback
 			view = createView(activity);
 			if (isDecorView) {
 				if (activity != null) {
-					((TiBaseActivity)activity).setViewProxy(view.getProxy());
+					((TiActivity)activity).setViewProxy(view.getProxy());
 				} else {
 					Log.w(LCAT, "Activity is null");
 				}

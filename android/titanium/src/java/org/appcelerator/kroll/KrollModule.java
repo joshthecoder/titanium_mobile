@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
 
@@ -78,8 +78,8 @@ public class KrollModule extends KrollProxy
 		}
 
 		super.initActivity(moduleActivity);
-		if (moduleActivity instanceof TiBaseActivity) {
-			((TiBaseActivity)moduleActivity).addOnLifecycleEventListener(this);
+		if (moduleActivity instanceof TiActivity) {
+			((TiActivity)moduleActivity).addOnLifecycleEventListener(this);
 		}
 	}
 

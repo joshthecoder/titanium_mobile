@@ -13,7 +13,7 @@ import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiActivityWindow;
 import org.appcelerator.titanium.TiActivityWindows;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
@@ -106,8 +106,8 @@ public class ActivityWindowProxy extends TiWindowProxy
 
 		if (useCurrentActivity) {
 			Activity activity = TiApplication.getInstance().getCurrentActivity();
-			if (activity instanceof TiBaseActivity) {
-				view = new TiUIActivityWindow(this, (TiBaseActivity) activity, messenger, MSG_FINISH_OPEN);
+			if (activity instanceof TiActivity) {
+				view = new TiUIActivityWindow(this, (TiActivity) activity, messenger, MSG_FINISH_OPEN);
 			}
 
 		} else {
@@ -121,7 +121,7 @@ public class ActivityWindowProxy extends TiWindowProxy
 
 		int windowId = TiActivityWindows.addWindow(new TiActivityWindow() {
 			@Override
-			public void windowCreated(TiBaseActivity activity)
+			public void windowCreated(TiActivity activity)
 			{
 				// This is the callback when a window associated with a tab is created.
 				// Since TiUIActivityWindow.bindProxies isn't called here, 

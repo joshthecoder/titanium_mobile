@@ -3,7 +3,7 @@ package org.appcelerator.titanium.proxy;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.view.TiUIView;
 
 import android.app.Activity;
@@ -34,8 +34,8 @@ public class TiBaseWindowProxy extends TiWindowProxy
 	{
 		// adding window to stack
 		Activity topActivity = TiApplication.getAppCurrentActivity();
-		if (topActivity instanceof TiBaseActivity) {
-			((TiBaseActivity)topActivity).addWindowToStack(this);
+		if (topActivity instanceof TiActivity) {
+			((TiActivity)topActivity).addWindowToStack(this);
 		}
 	}
 	
@@ -44,8 +44,8 @@ public class TiBaseWindowProxy extends TiWindowProxy
 	{
 		// removing window from stack
 		Activity topActivity = TiApplication.getAppCurrentActivity();
-		if (topActivity instanceof TiBaseActivity) {
-			((TiBaseActivity)topActivity).removeWindowFromStack(this);
+		if (topActivity instanceof TiActivity) {
+			((TiActivity)topActivity).removeWindowFromStack(this);
 		}
 	}
 

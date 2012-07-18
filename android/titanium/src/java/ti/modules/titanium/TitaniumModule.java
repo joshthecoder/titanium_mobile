@@ -25,7 +25,7 @@ import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiBaseActivity;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiLaunchActivity;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
@@ -235,7 +235,7 @@ public class TitaniumModule extends KrollModule
 		TiUIHelper.doOkDialog("Alert", msg, null);
 	}
 
-	public void cancelTimers(TiBaseActivity activity)
+	public void cancelTimers(TiActivity activity)
 	{
 		TiWindowProxy window = activity.getWindowProxy();
 		Thread thread = null;
@@ -438,8 +438,8 @@ public class TitaniumModule extends KrollModule
 
 	@Override
 	public void onDestroy(Activity activity) {
-		if (activity instanceof TiBaseActivity) {
-			cancelTimers((TiBaseActivity) activity);
+		if (activity instanceof TiActivity) {
+			cancelTimers((TiActivity) activity);
 		}
 
 		super.onDestroy(activity);
