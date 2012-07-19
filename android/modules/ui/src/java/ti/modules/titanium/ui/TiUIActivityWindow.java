@@ -173,7 +173,8 @@ public class TiUIActivityWindow extends TiUIView
 				windowProxy.setActivity(windowActivity);
 			}
 
-			tiActivity.setWindowProxy(windowProxy);
+			// TODO(josh): remove
+			//tiActivity.setWindowProxy(windowProxy);
 		}
 	}
 
@@ -294,7 +295,9 @@ public class TiUIActivityWindow extends TiUIView
 			return null;
 		}
 
-		return tia.getLayout();
+		// TODO(josh): remove/refactor
+		//return tia.getLayout();
+		return null;
 	}
 
 	protected void setActivityBackground(final Drawable drawable, boolean post)
@@ -409,11 +412,12 @@ public class TiUIActivityWindow extends TiUIView
 			}
 		}
 
+		// TODO(josh): move this into TiWindowProxy/TiUIWindow
 		if (d.containsKey(TiC.PROPERTY_LAYOUT)) {
 			TiCompositeLayout layout = null;
 
 			if (windowActivity instanceof TiActivity) {
-				layout = ((TiActivity)windowActivity).getLayout();
+				//layout = ((TiActivity)windowActivity).getLayout();
 			}
 
 			if (layout != null) {
@@ -500,11 +504,12 @@ public class TiUIActivityWindow extends TiUIView
 				proxy.getActivity().setTitle(title);
 			}
 
+		// TODO(josh): move into TiWindowProxy/TiUIWindow
 		} else if (key.equals(TiC.PROPERTY_LAYOUT)) {
 			TiCompositeLayout layout = null;
 
 			if (windowActivity instanceof TiActivity) {
-				layout = ((TiActivity)windowActivity).getLayout();
+				//layout = ((TiActivity)windowActivity).getLayout();
 			}
 
 			if (layout != null) {

@@ -16,7 +16,6 @@ import org.appcelerator.titanium.analytics.TiAnalyticsEventFactory;
 import org.appcelerator.titanium.util.TiColorHelper;
 import org.appcelerator.titanium.util.TiPlatformHelper;
 import org.appcelerator.titanium.util.TiUrl;
-import org.appcelerator.titanium.view.TiCompositeLayout;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -205,13 +204,14 @@ public abstract class TiLaunchActivity extends TiActivity
 			}
 
 			if (invalidLaunchDetected) {
+				// TODO(josh): clean up dead code
 				Log.e(TAG, "Android issue 2373 detected (missing intent CATEGORY_LAUNCHER or FLAG_ACTIVITY_RESET_TASK_IF_NEEDED), restarting app. " + this);
-				layout = new TiCompositeLayout(this, window);
-				setContentView(layout);
+				//layout = new TiCompositeLayout(this, window);
+				//setContentView(layout);
 				TiProperties systemProperties = getTiApp().getSystemProperties();
 				int backgroundColor = TiColorHelper.parseColor(systemProperties.getString("ti.android.bug2373.backgroundColor", "black"));
 				getWindow().getDecorView().setBackgroundColor(backgroundColor);
-				layout.setBackgroundColor(backgroundColor);
+				//layout.setBackgroundColor(backgroundColor);
 
 				activityOnCreate(savedInstanceState);
 

@@ -8,7 +8,6 @@ package org.appcelerator.titanium;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Stack;
 
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollRuntime;
@@ -18,13 +17,10 @@ import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
 import org.appcelerator.titanium.proxy.ActivityProxy;
 import org.appcelerator.titanium.proxy.IntentProxy;
-import org.appcelerator.titanium.proxy.TiBaseWindowProxy;
-import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
 import org.appcelerator.titanium.util.TiActivitySupport;
 import org.appcelerator.titanium.util.TiActivitySupportHelper;
-import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiMenuSupport;
 import org.appcelerator.titanium.util.TiPlatformHelper;
 import org.appcelerator.titanium.util.TiUIHelper;
@@ -42,7 +38,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -61,10 +56,7 @@ public class TiActivity extends Activity
 	private int originalOrientationMode = -1;
 	private TiWeakList<OnLifecycleEvent> lifecycleListeners = new TiWeakList<OnLifecycleEvent>();
 
-	protected TiCompositeLayout layout;
 	protected TiActivitySupportHelper supportHelper;
-	protected TiWindowProxy window;
-	protected TiViewProxy view;
 	protected ActivityProxy activityProxy;
 	protected TiWeakList<ConfigurationChangedListener> configChangedListeners = new TiWeakList<ConfigurationChangedListener>();
 	protected int orientationDegrees;
@@ -74,36 +66,9 @@ public class TiActivity extends Activity
 	protected int msgId = -1;
 	protected static int previousOrientation = -1;
 	private ArrayList<Dialog> dialogs = new ArrayList<Dialog>();
-	private Stack<TiBaseWindowProxy> windowStack = new Stack<TiBaseWindowProxy>();
 
 	public TiWindowProxy lwWindow;
 	public boolean isResumed = false;
-
-	public void addWindowToStack(TiBaseWindowProxy proxy)
-	{
-		if (windowStack.contains(proxy)) {
-			Log.e(TAG, "Error 37! Window already exists in stack");
-			return;
-		}
-		boolean isEmpty = windowStack.empty();
-		if (!isEmpty) {
-			windowStack.peek().fireEvent(TiC.EVENT_BLUR, null);
-		}
-		windowStack.add(proxy);
-		if (!isEmpty) { 
-			proxy.fireEvent(TiC.EVENT_FOCUS, null, false);
-		}
-	}
-
-	public void removeWindowFromStack(TiBaseWindowProxy proxy)
-	{
-		proxy.fireEvent(TiC.EVENT_BLUR, null);
-		windowStack.remove(proxy);
-		if (!windowStack.empty()) {
-			TiBaseWindowProxy nextWindow = windowStack.peek();
-			nextWindow.fireEvent(TiC.EVENT_FOCUS, null, false);
-		}
-	}
 
 	// could use a normal ConfigurationChangedListener but since only orientation changes are
 	// forwarded, create a separate interface in order to limit scope and maintain clarity 
@@ -136,46 +101,6 @@ public class TiActivity extends Activity
 	}
 
 	/**
-	 * @return the window proxy associated with this activity.
-	 */
-	public TiWindowProxy getWindowProxy()
-	{
-		return this.window;
-	}
-
-	/**
-	 * Sets the window proxy.
-	 * @param proxy
-	 */
-	public void setWindowProxy(TiWindowProxy proxy)
-	{
-		this.window = proxy;
-		setLayoutProxy(proxy);
-		updateTitle();
-	}
-
-	/**
-	 * Sets the proxy for our layout (used for post layout event)
-	 * 
-	 * @param proxy
-	 */
-	protected void setLayoutProxy(TiViewProxy proxy)
-	{
-		if (layout != null) {
-			layout.setProxy(proxy);
-		}
-	}
-
-	/**
-	 * Sets the view proxy.
-	 * @param proxy
-	 */
-	public void setViewProxy(TiViewProxy proxy)
-	{
-		this.view = proxy;
-	}
-
-	/**
 	 * @return activity proxy associated with this activity.
 	 */
 	public ActivityProxy getActivityProxy()
@@ -195,14 +120,6 @@ public class TiActivity extends Activity
 	public void setActivityProxy(ActivityProxy proxy)
 	{
 		this.activityProxy = proxy;
-	}
-
-	/**
-	 * @return the activity's current layout.
-	 */
-	public TiCompositeLayout getLayout()
-	{
-		return layout;
 	}
 
 	public void addConfigurationChangedListener(ConfigurationChangedListener listener)
@@ -261,9 +178,10 @@ public class TiActivity extends Activity
 		return defaultValue;
 	}
 
-
+	// TODO(josh): move this logic into TiWindowActivity
 	protected void updateTitle()
 	{
+		/*
 		if (window == null) return;
 
 		if (window.hasProperty(TiC.PROPERTY_TITLE)) {
@@ -287,6 +205,7 @@ public class TiActivity extends Activity
 				});
 			}
 		}
+		*/
 	}
 
 	// Subclasses can override to provide a custom layout
@@ -418,10 +337,12 @@ public class TiActivity extends Activity
 		// Doing this on every create in case the activity is externally created.
 		TiPlatformHelper.intializeDisplayMetrics(this);
 
-		layout = createLayout();
+		// TODO(josh): move this into TiWindowActviity?
+		/*
 		if (intent != null && intent.hasExtra(TiC.PROPERTY_KEEP_SCREEN_ON)) {
 			layout.setKeepScreenOn(intent.getBooleanExtra(TiC.PROPERTY_KEEP_SCREEN_ON, layout.getKeepScreenOn()));
 		}
+		*/
 
 		super.onCreate(savedInstanceState);
 		
@@ -440,8 +361,6 @@ public class TiActivity extends Activity
 		// set the current activity back to what it was originally
 		tiApp.setCurrentActivity(this, tempCurrentActivity);
 
-		setContentView(layout);
-
 		sendMessage(msgActivityCreatedId);
 		// for backwards compatibility
 		sendMessage(msgId);
@@ -450,9 +369,12 @@ public class TiActivity extends Activity
 		// for later use
 		originalOrientationMode = getRequestedOrientation();
 
+		// TODO(josh): refactor this out of here
+		/*
 		if (window != null) {
 			window.onWindowActivityCreated();
 		}
+		*/
 	}
 
 	public int getOriginalOrientationMode()
@@ -520,92 +442,6 @@ public class TiActivity extends Activity
 	{
 		super.onActivityResult(requestCode, resultCode, data);
 		getSupportHelper().onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) 
-	{
-		boolean handled = false;
-		
-		TiViewProxy window;
-		if (this.window != null) {
-			window = this.window;
-		} else {
-			window = this.view;
-		}
-		
-		if (window == null) {
-			return super.dispatchKeyEvent(event);
-		}
-
-		switch(event.getKeyCode()) {
-			case KeyEvent.KEYCODE_BACK : {
-				if (window.hasListeners(TiC.EVENT_ANDROID_BACK)) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						window.fireEvent(TiC.EVENT_ANDROID_BACK, null);
-					}
-					handled = true;
-				}
-
-				break;
-			}
-			case KeyEvent.KEYCODE_CAMERA : {
-				if (window.hasListeners(TiC.EVENT_ANDROID_CAMERA)) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						window.fireEvent(TiC.EVENT_ANDROID_CAMERA, null);
-					}
-					handled = true;
-				}
-
-				break;
-			}
-			case KeyEvent.KEYCODE_FOCUS : {
-				if (window.hasListeners(TiC.EVENT_ANDROID_FOCUS)) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						window.fireEvent(TiC.EVENT_ANDROID_FOCUS, null);
-					}
-					handled = true;
-				}
-
-				break;
-			}
-			case KeyEvent.KEYCODE_SEARCH : {
-				if (window.hasListeners(TiC.EVENT_ANDROID_SEARCH)) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						window.fireEvent(TiC.EVENT_ANDROID_SEARCH, null);
-					}
-					handled = true;
-				}
-
-				break;
-			}
-			case KeyEvent.KEYCODE_VOLUME_UP : {
-				if (window.hasListeners(TiC.EVENT_ANDROID_VOLUP)) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						window.fireEvent(TiC.EVENT_ANDROID_VOLUP, null);
-					}
-					handled = true;
-				}
-
-				break;
-			}
-			case KeyEvent.KEYCODE_VOLUME_DOWN : {
-				if (window.hasListeners(TiC.EVENT_ANDROID_VOLDOWN)) {
-					if (event.getAction() == KeyEvent.ACTION_UP) {
-						window.fireEvent(TiC.EVENT_ANDROID_VOLDOWN, null);
-					}
-					handled = true;
-				}
-
-				break;
-			}
-		}
-			
-		if (!handled) {
-			handled = super.dispatchKeyEvent(event);
-		}
-
-		return handled;
 	}
 
 	@Override
@@ -714,10 +550,6 @@ public class TiActivity extends Activity
 			}
 			return;
 		}
-
-		if (!windowStack.empty()) {
-			windowStack.peek().fireEvent(TiC.EVENT_BLUR, null);
-		}
 	
 		TiApplication.updateActivityTransitionState(true);
 		tiApp.setCurrentActivity(this, null);
@@ -762,10 +594,6 @@ public class TiActivity extends Activity
 			}
 			return;
 		}
-
-		if (!windowStack.empty()) {
-			windowStack.peek().fireEvent(TiC.EVENT_FOCUS, null, false);
-		} 
 		
 		tiApp.setCurrentActivity(this, this);
 		TiApplication.updateActivityTransitionState(false);
@@ -972,17 +800,13 @@ public class TiActivity extends Activity
 
 		fireOnDestroy();
 
-		
-		if (layout != null) {
-			Log.e(TAG, "Layout cleanup.");
-			layout.removeAllViews();
-			layout = null;
-		}
-
+		// TODO(josh): remove
+		/*
 		if (window != null) {
 			window.closeFromActivity();
 			window = null;
 		}
+		*/
 
 		if (menuHelper != null) {
 			menuHelper.destroy();
@@ -1018,11 +842,14 @@ public class TiActivity extends Activity
 	@Override
 	public void finish()
 	{
+		// TODO(josh): find a better place for fire 'close'. Should live in TiWindowActivity/TiWindowProxy.
+		/*
 		if (window != null) {
 			KrollDict data = new KrollDict();
 			data.put(TiC.EVENT_PROPERTY_SOURCE, window);
 			window.fireSyncEvent(TiC.EVENT_CLOSE, data);
 		}
+		*/
 
 		boolean animate = getIntentBoolean(TiC.PROPERTY_ANIMATE, true);
 

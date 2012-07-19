@@ -24,11 +24,9 @@ import org.appcelerator.kroll.KrollRuntime;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiActivity;
-import org.appcelerator.titanium.TiLaunchActivity;
+import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
-import org.appcelerator.titanium.proxy.TiWindowProxy;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiPlatformHelper;
 import org.appcelerator.titanium.util.TiRHelper;
@@ -237,20 +235,7 @@ public class TitaniumModule extends KrollModule
 
 	public void cancelTimers(TiActivity activity)
 	{
-		TiWindowProxy window = activity.getWindowProxy();
-		Thread thread = null;
-
-		// FIXME this used to look at the activity / tiContext, but we don't care now
-		if (window != null) {
-			thread = getRuntimeHandler().getLooper().getThread();
-
-		} else {
-			if (activity instanceof TiLaunchActivity) {
-				//TiLaunchActivity launchActivity = (TiLaunchActivity) activity;
-				thread = getRuntimeHandler().getLooper().getThread();
-			}
-		}
-
+		Thread thread = getRuntimeHandler().getLooper().getThread();
 		if (thread != null) {
 			cancelTimers(thread);
 

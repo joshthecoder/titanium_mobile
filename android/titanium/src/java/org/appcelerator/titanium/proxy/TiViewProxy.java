@@ -24,7 +24,6 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiDimension;
 import org.appcelerator.titanium.util.TiAnimationBuilder;
@@ -424,6 +423,9 @@ public abstract class TiViewProxy extends KrollProxy implements Handler.Callback
 
 			Activity activity = getActivity();
 			view = createView(activity);
+
+			// TODO(josh): remove
+			/*
 			if (isDecorView) {
 				if (activity != null) {
 					((TiActivity)activity).setViewProxy(view.getProxy());
@@ -431,6 +433,8 @@ public abstract class TiViewProxy extends KrollProxy implements Handler.Callback
 					Log.w(LCAT, "Activity is null");
 				}
 			}
+			*/
+
 			realizeViews(view);
 			view.registerForTouch();
 		}
