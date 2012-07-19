@@ -262,21 +262,7 @@ public class UIModule extends KrollModule implements Handler.Callback
 				windowProxy = windowActivity.getTopWindow();
 			}
 
-			if (windowProxy == null)
-			{
-				if (windowActivity.lwWindow != null)
-				{
-					windowActivity.lwWindow.setOrientationModes(orientationModes);
-				}
-				else
-				{
-					Log.e(LCAT, "no window has been associated with activity, unable to set orientation");
-				}
-			}
-			else
-			{
-				windowProxy.setOrientationModes(orientationModes);
-			}
+			windowProxy.setOrientationModes(orientationModes);
 		}	
 	}
 

@@ -9,9 +9,14 @@ package org.appcelerator.titanium;
 import java.util.Stack;
 
 import org.appcelerator.kroll.common.Log;
+import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.proxy.TiBaseWindowProxy;
 
+import android.os.Build;
+import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
 
 
 /**
@@ -48,6 +53,65 @@ public class TiWindowActivity extends TiActivity {
 
 	public TiBaseWindowProxy getTopWindow() {
 		return windowStack.empty() ? null : windowStack.peek();
+	}
+
+	// TODO(josh): re-enable this logic in some way.
+	private void windowCreated()
+	{
+		boolean fullscreen = getIntentBoolean(TiC.PROPERTY_FULLSCREEN, false);
+		boolean navBarHidden = getIntentBoolean(TiC.PROPERTY_NAV_BAR_HIDDEN, false);
+		boolean modal = getIntentBoolean(TiC.PROPERTY_MODAL, false);
+		int softInputMode = getIntentInt(TiC.PROPERTY_WINDOW_SOFT_INPUT_MODE, -1);
+		boolean hasSoftInputMode = softInputMode != -1;
+
+		if (fullscreen) {
+			getWindow().setFlags(
+				WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		}
+
+		setNavBarHidden(navBarHidden);
+
+		if (modal) {
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
+				WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+		}
+
+		if (hasSoftInputMode) {
+			if (TiConfig.DEBUG) {
+				Log.d(TAG, "windowSoftInputMode: " + softInputMode);
+			}
+
+			getWindow().setSoftInputMode(softInputMode);
+		}
+
+		boolean useActivityWindow = getIntentBoolean(TiC.INTENT_PROPERTY_USE_ACTIVITY_WINDOW, false);
+		if (useActivityWindow) {
+			int windowId = getIntentInt(TiC.INTENT_PROPERTY_WINDOW_ID, -1);
+			TiActivityWindows.windowCreated(this, windowId);
+		}
+	}
+
+	private void setNavBarHidden(boolean hidden)
+	{
+		if (!hidden) {
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+				// Do not enable these features on Honeycomb or later since it will break the action bar.
+				this.requestWindowFeature(Window.FEATURE_LEFT_ICON);
+				this.requestWindowFeature(Window.FEATURE_RIGHT_ICON);
+			}
+
+			this.requestWindowFeature(Window.FEATURE_PROGRESS);
+			this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
+		} else {
+			this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override

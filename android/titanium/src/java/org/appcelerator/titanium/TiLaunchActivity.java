@@ -161,14 +161,6 @@ public abstract class TiLaunchActivity extends TiActivity
 		super.onCreate(savedInstanceState);
 	}
 
-	@Override
-	protected void windowCreated()
-	{
-		super.windowCreated();
-		loadActivityScript();
-		scriptLoaded();
-	}
-
 	protected boolean checkInvalidLaunch(Bundle savedInstanceState)
 	{
 		Intent intent = getIntent();

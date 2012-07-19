@@ -69,20 +69,6 @@ public abstract class TiJSActivity extends TiLaunchActivity
 	}
 
 	@Override
-	protected void windowCreated()
-	{
-		// TODO(josh): remove
-		// Set the layout proxy here since it's not ready when we indirectly call it inside contextCreated()
-		//setLayoutProxy(window);
-
-		// TODO(josh): remove
-		// The UIWindow needs to be created before we run the script
-		//activityWindow = new TiUIActivityWindow((TiActivityWindowProxy)window, this, layout);
-
-		super.windowCreated();
-	}
-
-	@Override
 	protected boolean shouldFinishRootActivity()
 	{
 		return getIntentBoolean(TiC.PROPERTY_EXIT_ON_CLOSE, false) || super.shouldFinishRootActivity();

@@ -101,6 +101,7 @@ public class TiRootActivity extends TiLaunchActivity
 		tiApp.verifyCustomModules(this);
 	}
 
+	/* TODO(josh): refactor this into TiWindowActivity?
 	@Override
 	protected void windowCreated()
 	{
@@ -110,6 +111,7 @@ public class TiRootActivity extends TiLaunchActivity
 		getIntent().putExtra(TiC.PROPERTY_NAV_BAR_HIDDEN, appInfo.isNavBarHidden());
 		super.windowCreated();
 	}
+	*/
 
 	// Lifecyle
 

@@ -17,7 +17,6 @@ import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
 import org.appcelerator.titanium.proxy.ActivityProxy;
 import org.appcelerator.titanium.proxy.IntentProxy;
-import org.appcelerator.titanium.proxy.TiWindowProxy;
 import org.appcelerator.titanium.util.TiActivityResultHandler;
 import org.appcelerator.titanium.util.TiActivitySupport;
 import org.appcelerator.titanium.util.TiActivitySupportHelper;
@@ -33,22 +32,16 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 
 
-public class TiActivity extends Activity 
-	implements TiActivitySupport
-{
+public class TiActivity extends Activity implements TiActivitySupport {
 	private static final String TAG = "TiActivity";
-	private static final boolean DBG = TiConfig.LOGD;
 
 	private static OrientationChangedListener orientationChangedListener = null;
 
@@ -67,7 +60,6 @@ public class TiActivity extends Activity
 	protected static int previousOrientation = -1;
 	private ArrayList<Dialog> dialogs = new ArrayList<Dialog>();
 
-	public TiWindowProxy lwWindow;
 	public boolean isResumed = false;
 
 	// could use a normal ConfigurationChangedListener but since only orientation changes are
@@ -225,64 +217,6 @@ public class TiActivity extends Activity
 		return new TiCompositeLayout(this, arrangement, null);
 	}
 
-	protected void setFullscreen(boolean fullscreen)
-	{
-		if (fullscreen) {
-			getWindow().setFlags(
-				WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		}
-	}
-
-	protected void setNavBarHidden(boolean hidden)
-	{
-		if (!hidden) {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-				// Do not enable these features on Honeycomb or later since it will break the action bar.
-				this.requestWindowFeature(Window.FEATURE_LEFT_ICON);
-				this.requestWindowFeature(Window.FEATURE_RIGHT_ICON);
-			}
-
-			this.requestWindowFeature(Window.FEATURE_PROGRESS);
-			this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
-		} else {
-			this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
-	}
-
-	// Subclasses can override to handle post-creation (but pre-message fire) logic
-	protected void windowCreated()
-	{
-		boolean fullscreen = getIntentBoolean(TiC.PROPERTY_FULLSCREEN, false);
-		boolean navBarHidden = getIntentBoolean(TiC.PROPERTY_NAV_BAR_HIDDEN, false);
-		boolean modal = getIntentBoolean(TiC.PROPERTY_MODAL, false);
-		int softInputMode = getIntentInt(TiC.PROPERTY_WINDOW_SOFT_INPUT_MODE, -1);
-		boolean hasSoftInputMode = softInputMode != -1;
-		
-		setFullscreen(fullscreen);
-		setNavBarHidden(navBarHidden);
-
-		if (modal) {
-			getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND,
-				WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-		}
-
-		if (hasSoftInputMode) {
-			if (DBG) {
-				Log.d(TAG, "windowSoftInputMode: " + softInputMode);
-			}
-
-			getWindow().setSoftInputMode(softInputMode);
-		}
-
-		boolean useActivityWindow = getIntentBoolean(TiC.INTENT_PROPERTY_USE_ACTIVITY_WINDOW, false);
-		if (useActivityWindow) {
-			int windowId = getIntentInt(TiC.INTENT_PROPERTY_WINDOW_ID, -1);
-			TiActivityWindows.windowCreated(this, windowId);
-		}
-	}
-
 	@Override
 	/**
 	 * When the activity is created, this method adds it to the activity stack and
@@ -291,7 +225,7 @@ public class TiActivity extends Activity
 	 */
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onCreate");
 		}
 
@@ -352,7 +286,8 @@ public class TiActivity extends Activity
 		Activity tempCurrentActivity = tiApp.getCurrentActivity();
 		tiApp.setCurrentActivity(this, this);
 
-		windowCreated();
+		// TODO(josh): move into TiWindowActivity
+		//windowCreated();
 
 		if (activityProxy != null) {
 			activityProxy.fireSyncEvent(TiC.EVENT_CREATE, null);
@@ -493,7 +428,7 @@ public class TiActivity extends Activity
 	{
 		super.onNewIntent(intent);
 
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onNewIntent");
 		}
 		
@@ -537,7 +472,7 @@ public class TiActivity extends Activity
 		super.onPause();
 		isResumed = false;
 
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onPause");
 		}
 
@@ -583,7 +518,7 @@ public class TiActivity extends Activity
 	{
 		super.onResume();
 
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onResume");
 		}
 
@@ -630,7 +565,7 @@ public class TiActivity extends Activity
 		// Turn if off until an activity indicator is shown.
 		setProgressBarIndeterminateVisibility(false);
 
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onStart");
 		}
 
@@ -682,7 +617,7 @@ public class TiActivity extends Activity
 	{
 		super.onStop();
 
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onStop");
 		}
 
@@ -719,7 +654,7 @@ public class TiActivity extends Activity
 	{
 		super.onRestart();
 
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onRestart");
 		}
 
@@ -754,7 +689,7 @@ public class TiActivity extends Activity
 	 */
 	protected void onDestroy()
 	{
-		if (DBG) {
+		if (TiConfig.DEBUG) {
 			Log.d(TAG, "Activity " + this + " onDestroy");
 		}
 
