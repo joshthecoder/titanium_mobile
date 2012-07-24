@@ -14,12 +14,9 @@ import java.util.HashMap;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.annotations.Kroll;
-import org.appcelerator.kroll.common.AsyncResult;
 import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.kroll.common.TiMessenger;
-import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiActivity;
+import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiOrientationHelper;
@@ -31,7 +28,6 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.Message;
 import android.view.View;
 
 @Kroll.proxy(propertyAccessors={
@@ -44,14 +40,10 @@ import android.view.View;
 	TiC.PROPERTY_URL,
 	TiC.PROPERTY_WINDOW_SOFT_INPUT_MODE
 })
-public abstract class TiWindowProxy extends TiViewProxy
-{
-	private static final String LCAT = "TiWindowProxy";
-	private static final boolean DBG = TiConfig.LOGD;
+public class TiWindowProxy extends TiViewProxy {
+	private static final String TAG = "TiWindowProxy";
 	
 	private static final int MSG_FIRST_ID = KrollProxy.MSG_LAST_ID + 1;
-	private static final int MSG_OPEN = MSG_FIRST_ID + 100;
-	private static final int MSG_CLOSE = MSG_FIRST_ID + 101;
 	protected static final int MSG_LAST_ID = MSG_FIRST_ID + 999;
 
 	private static WeakReference<TiWindowProxy> waitingForOpen;
@@ -91,28 +83,6 @@ public abstract class TiWindowProxy extends TiViewProxy
 		throw new IllegalStateException("Windows are created during open");
 	}
 
-	@Override
-	public boolean handleMessage(Message msg)
-	{
-		switch (msg.what) {
-			case MSG_OPEN: {
-				AsyncResult result = (AsyncResult) msg.obj;
-				handleOpen((KrollDict) result.getArg());
-				result.setResult(null); // signal opened
-				return true;
-			}
-			case MSG_CLOSE: {
-				AsyncResult result = (AsyncResult) msg.obj;
-				handleClose((KrollDict) result.getArg());
-				result.setResult(null); // signal closed
-				return true;
-			}
-			default: {
-				return super.handleMessage(msg);
-			}
-		}
-	}
-
 	@Kroll.method @SuppressWarnings("unchecked")
 	public void open(@Kroll.argument(optional = true) Object arg)
 	{
@@ -140,12 +110,12 @@ public abstract class TiWindowProxy extends TiViewProxy
 		}
 
 		if (TiApplication.isUIThread()) {
-			handleOpen(options);
+			// TODO(josh): handleOpen(options);
 			opening = false;
 			return;
 		}
 
-		TiMessenger.sendBlockingMainMessage(getMainHandler().obtainMessage(MSG_OPEN), options);
+		// TODO(josh): TiMessenger.sendBlockingMainMessage(getMainHandler().obtainMessage(MSG_OPEN), options);
 
 		opening = false;
 	}
@@ -171,11 +141,11 @@ public abstract class TiWindowProxy extends TiViewProxy
 		}
 
 		if (TiApplication.isUIThread()) {
-			handleClose(options);
+			// TODO(josh): handleClose(options);
 			return;
 		}
 
-		TiMessenger.sendBlockingMainMessage(getMainHandler().obtainMessage(MSG_CLOSE), options);
+		// TODO(josh): TiMessenger.sendBlockingMainMessage(getMainHandler().obtainMessage(MSG_CLOSE), options);
 	}
 
 	public void closeFromActivity()
@@ -244,7 +214,7 @@ public abstract class TiWindowProxy extends TiViewProxy
 	@Kroll.setProperty @Kroll.method
 	public void setLeftNavButton(Object button)
 	{
-		Log.w(LCAT, "setLeftNavButton not supported in Android");
+		Log.w(TAG, "setLeftNavButton not supported in Android");
 	}
 
 	@Kroll.method
@@ -338,8 +308,8 @@ public abstract class TiWindowProxy extends TiViewProxy
 				activityOrientationMode = 8;
 			}
 
-			Activity activity = getWindowActivity();
-
+			// TODO(josh): Activity activity = getWindowActivity();
+			/*
 			// Wait until the window activity is created before setting orientation modes.
 			if (activity != null && windowActivityCreated)
 			{
@@ -352,6 +322,7 @@ public abstract class TiWindowProxy extends TiViewProxy
 					activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 				}
 			}
+			*/
 		}
 		else
 		{
@@ -379,10 +350,6 @@ public abstract class TiWindowProxy extends TiViewProxy
 	{
 		return super.getActivityProxy();
 	}
-
-	protected abstract void handleOpen(KrollDict options);
-	protected abstract void handleClose(KrollDict options);
-	protected abstract Activity getWindowActivity();
 
 	/**
 	 * Sub-classes will need to call handlePostOpen after their window is visible
@@ -423,7 +390,7 @@ public abstract class TiWindowProxy extends TiViewProxy
 			return TiOrientationHelper.convertConfigToTiOrientationMode(activity.getResources().getConfiguration().orientation);
 		}
 
-		Log.e(LCAT, "unable to get orientation, activity not found for window");
+		Log.e(TAG, "unable to get orientation, activity not found for window");
 		return TiOrientationHelper.ORIENTATION_UNKNOWN;
 	}
 
@@ -443,5 +410,15 @@ public abstract class TiWindowProxy extends TiViewProxy
 	public void setWindowPixelFormat(int pixelFormat)
 	{
 		setProperty(TiC.PROPERTY_WINDOW_PIXEL_FORMAT, pixelFormat, true);
+	}
+
+	@Override
+	protected KrollDict getLangConversionTable()
+	{
+		KrollDict table = super.getLangConversionTable();
+		table.put(TiC.PROPERTY_TITLE, TiC.PROPERTY_TITLEID);
+		table.put(TiC.PROPERTY_TITLE_PROMPT, TiC.PROPERTY_TITLE_PROMPTID);
+
+		return table;
 	}
 }

@@ -251,7 +251,7 @@ public class KrollProxy implements Handler.Callback, KrollProxySupport
 	 */
 	protected KrollDict getLangConversionTable()
 	{
-		return null;
+		return new KrollDict();
 	}
 
 	/**

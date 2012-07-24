@@ -13,7 +13,6 @@ import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.titanium.TiC;
-import org.appcelerator.titanium.proxy.TiBaseWindowProxy;
 import org.appcelerator.titanium.proxy.TiViewProxy;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.view.TiUIView;
@@ -132,20 +131,6 @@ public class TiUITabGroup extends TiUIView
 	{
 		// ignore focus change for tab group.
 		// we can simply fire focus/blur from onTabChanged (to avoid chicken/egg event problems)
-	}
-
-	@SuppressWarnings("unused")
-	private TiViewProxy getTabWindow(TabProxy tab)
-	{
-		TiViewProxy viewProxy = tab.getWindow();
-		if (viewProxy instanceof TiBaseWindowProxy) {
-			TiViewProxy wrappedViewProxy = ((TiBaseWindowProxy) viewProxy).getWrappedView();
-			if (wrappedViewProxy != null) {
-				viewProxy = wrappedViewProxy;
-			}
-		}
-
-		return viewProxy;
 	}
 
 	@Override

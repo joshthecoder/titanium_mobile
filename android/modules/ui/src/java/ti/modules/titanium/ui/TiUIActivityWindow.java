@@ -14,10 +14,10 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollProxy;
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
+import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiActivityWindow;
 import org.appcelerator.titanium.TiActivityWindows;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.proxy.ActivityProxy;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
@@ -63,7 +63,7 @@ public class TiUIActivityWindow extends TiUIView
 	protected int lastWidth, lastHeight;
 
 
-	public TiUIActivityWindow(ActivityWindowProxy proxy, KrollDict options, Messenger messenger, int messageId)
+	public TiUIActivityWindow(TiWindowProxy proxy, KrollDict options, Messenger messenger, int messageId)
 	{
 		super(proxy);
 		animate = true;
@@ -82,12 +82,12 @@ public class TiUIActivityWindow extends TiUIView
 		createNewActivity(options);
 	}
 
-	public TiUIActivityWindow(ActivityWindowProxy proxy, TiActivity activity)
+	public TiUIActivityWindow(TiWindowProxy proxy, TiActivity activity)
 	{
 		this(proxy, activity, null, -1);
 	}
 
-	public TiUIActivityWindow(ActivityWindowProxy proxy, TiActivity activity, Messenger messenger, int messageId)
+	public TiUIActivityWindow(TiWindowProxy proxy, TiActivity activity, Messenger messenger, int messageId)
 	{
 		super(proxy);
 		windowActivity = activity;

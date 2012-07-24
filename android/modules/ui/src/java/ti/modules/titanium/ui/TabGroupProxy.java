@@ -13,13 +13,10 @@ import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.annotations.Kroll;
 import org.appcelerator.kroll.common.AsyncResult;
 import org.appcelerator.kroll.common.Log;
-import org.appcelerator.kroll.common.TiConfig;
 import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
-import org.appcelerator.titanium.TiActivity;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiContext;
-import org.appcelerator.titanium.proxy.TiBaseWindowProxy;
 import org.appcelerator.titanium.proxy.TiWindowProxy;
 import org.appcelerator.titanium.util.TiConvert;
 import org.appcelerator.titanium.util.TiUIHelper;
@@ -28,17 +25,14 @@ import org.appcelerator.titanium.view.TiUIView;
 import ti.modules.titanium.ui.widget.TiUITabGroup;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-import android.widget.TabHost.TabSpec;
 
 @Kroll.proxy(creatableInModule=UIModule.class)
 public class TabGroupProxy extends TiWindowProxy
 {
-	private static final String LCAT = "TabGroupProxy";
-	private static boolean DBG = TiConfig.LOGD;
+	private static final String TAG = "TabGroupProxy";
 
 	private static final int MSG_FIRST_ID = TiWindowProxy.MSG_LAST_ID + 1;
 
@@ -157,6 +151,7 @@ public class TabGroupProxy extends TiWindowProxy
 
 	private void addTabToGroup(TiUITabGroup tg, TabProxy tab)
 	{
+		/* TODO(josh): refactor
 		TiTabActivity tta = weakActivity.get();
 		if (tta == null) {
 			if (DBG) {
@@ -203,6 +198,7 @@ public class TabGroupProxy extends TiWindowProxy
 
 			tg.addTab(tspec, tab);
 		}
+		*/
 	}
 
 	@Kroll.method
@@ -245,7 +241,7 @@ public class TabGroupProxy extends TiWindowProxy
 				setOrientationModes(modes);
 
 			} catch (ClassCastException e) {
-				Log.e(LCAT, "Invalid orientationMode array. Must only contain orientation mode constants.");
+				Log.e(TAG, "Invalid orientationMode array. Must only contain orientation mode constants.");
 			}
 		}
 	}
@@ -260,9 +256,9 @@ public class TabGroupProxy extends TiWindowProxy
 			int activeTabIndex = tg.getActiveTab();
 
 			if (activeTabIndex < 0) {
-				Log.e(LCAT, "unable to get active tab, invalid index returned: " + activeTabIndex);
+				Log.e(TAG, "unable to get active tab, invalid index returned: " + activeTabIndex);
 			} else if (activeTabIndex >= tabs.size()) {
-				Log.e(LCAT, "unable to get active tab, index is larger than tabs array: " + activeTabIndex);
+				Log.e(TAG, "unable to get active tab, index is larger than tabs array: " + activeTabIndex);
 			}
 			activeTab = tabs.get(activeTabIndex);
 		} else {
@@ -271,23 +267,24 @@ public class TabGroupProxy extends TiWindowProxy
 				if (tabsIndex >= tabs.size()) {
 					activeTab = tabs.get(tabsIndex);
 				} else {
-					Log.e(LCAT, "Unable to get active tab, initialActiveTab index is larger than tabs array");
+					Log.e(TAG, "Unable to get active tab, initialActiveTab index is larger than tabs array");
 				}
 			} else if (initialActiveTab instanceof TabProxy) {
 				activeTab = (TabProxy)initialActiveTab;
 			} else {
-				Log.e(LCAT, "Unable to get active tab, initialActiveTab is not recognized");
+				Log.e(TAG, "Unable to get active tab, initialActiveTab is not recognized");
 			}
 		}
 
 		if (activeTab == null) {
 			String errorMessage = "Failed to get activeTab, make sure tabs are added first before calling getActiveTab()";
-			Log.e(LCAT, errorMessage);
+			Log.e(TAG, errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
 		return activeTab;
 	}
 
+	/* TODO(josh): refactor
 	@Override
 	protected void handleOpen(KrollDict options)
 	{
@@ -304,6 +301,7 @@ public class TabGroupProxy extends TiWindowProxy
 		fillIntent(activity, intent);
 		activity.startActivity(intent);
 	}
+	*/
 
 	public void handlePostOpen(Activity activity)
 	{
@@ -331,6 +329,7 @@ public class TabGroupProxy extends TiWindowProxy
 		// is set as part of the fillIntentForTab call
 	}
 
+	/* TODO(josh): refactor
 	@Override
 	protected void handleClose(KrollDict options)
 	{
@@ -351,6 +350,7 @@ public class TabGroupProxy extends TiWindowProxy
 
 		opened = false;
 	}
+	*/
 
 
 	public KrollDict buildFocusEvent(int toIndex, int fromIndex)
@@ -451,16 +451,6 @@ public class TabGroupProxy extends TiWindowProxy
 		}
 		// Don't clear the tabs collection -- it contains proxies, not views
 		//tabs.clear();
-	}
-
-	@Override
-	protected Activity getWindowActivity()
-	{
-		if (weakActivity != null) {
-			return weakActivity.get();
-		}
-
-		return null;
 	}
 
 	@Kroll.method @Kroll.setProperty

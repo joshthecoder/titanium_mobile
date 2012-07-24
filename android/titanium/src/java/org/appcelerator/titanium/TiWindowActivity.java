@@ -10,7 +10,7 @@ import java.util.Stack;
 
 import org.appcelerator.kroll.common.Log;
 import org.appcelerator.kroll.common.TiConfig;
-import org.appcelerator.titanium.proxy.TiBaseWindowProxy;
+import org.appcelerator.titanium.proxy.TiWindowProxy;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -25,9 +25,9 @@ import android.view.WindowManager;
 public class TiWindowActivity extends TiActivity {
 	private static final String TAG = "TiWindowActivity";
 
-	private Stack<TiBaseWindowProxy> windowStack = new Stack<TiBaseWindowProxy>();
+	private Stack<TiWindowProxy> windowStack = new Stack<TiWindowProxy>();
 
-	public void addWindow(TiBaseWindowProxy proxy) {
+	public void addWindow(TiWindowProxy proxy) {
 		if (windowStack.contains(proxy)) {
 			Log.e(TAG, "Error 37! Window already exists in stack");
 			return;
@@ -42,16 +42,16 @@ public class TiWindowActivity extends TiActivity {
 		}
 	}
 
-	public void removeWindow(TiBaseWindowProxy proxy) {
+	public void removeWindow(TiWindowProxy proxy) {
 		proxy.fireEvent(TiC.EVENT_BLUR, null);
 		windowStack.remove(proxy);
 		if (!windowStack.empty()) {
-			TiBaseWindowProxy nextWindow = windowStack.peek();
+			TiWindowProxy nextWindow = windowStack.peek();
 			nextWindow.fireEvent(TiC.EVENT_FOCUS, null, false);
 		}
 	}
 
-	public TiBaseWindowProxy getTopWindow() {
+	public TiWindowProxy getTopWindow() {
 		return windowStack.empty() ? null : windowStack.peek();
 	}
 
@@ -137,7 +137,7 @@ public class TiWindowActivity extends TiActivity {
 	{
 		boolean handled = false;
 		
-		TiBaseWindowProxy window = getTopWindow();
+		TiWindowProxy window = getTopWindow();
 		if (window == null) {
 			return super.dispatchKeyEvent(event);
 		}

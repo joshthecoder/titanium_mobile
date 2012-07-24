@@ -9,17 +9,14 @@ package ti.modules.titanium.android;
 import org.appcelerator.titanium.TiC;
 import org.appcelerator.titanium.TiLaunchActivity;
 import org.appcelerator.titanium.proxy.ActivityProxy;
-import org.appcelerator.titanium.proxy.TiActivityWindowProxy;
 import org.appcelerator.titanium.util.TiBindingHelper;
 import org.appcelerator.titanium.util.TiConvert;
-import org.appcelerator.titanium.view.TiUIActivityWindow;
 
 import android.content.Intent;
 
 public abstract class TiJSActivity extends TiLaunchActivity
 {
 	protected String url;
-	protected TiUIActivityWindow activityWindow;
 
 	public TiJSActivity(ActivityProxy proxy)
 	{
@@ -49,6 +46,7 @@ public abstract class TiJSActivity extends TiLaunchActivity
 		return url;
 	}
 
+	/* TODO(josh): refactor this out of here?
 	@Override
 	protected void contextCreated()
 	{
@@ -57,15 +55,15 @@ public abstract class TiJSActivity extends TiLaunchActivity
 		window.setActivity(this);
 		TiBindingHelper.bindCurrentWindow(window);
 
-		// TODO(josh): remove
-		//setWindowProxy(window);
+		setWindowProxy(window);
 	}
+	*/
 
 	@Override
 	protected void scriptLoaded()
 	{
 		super.scriptLoaded();
-		activityWindow.open();
+		// TODO(josh): activityWindow.open();
 	}
 
 	@Override
