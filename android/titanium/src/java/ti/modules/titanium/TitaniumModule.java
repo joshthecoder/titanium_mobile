@@ -29,6 +29,7 @@ import org.appcelerator.titanium.util.TiRHelper;
 import org.appcelerator.titanium.util.TiUIHelper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.SparseArray;
@@ -393,5 +394,14 @@ public class TitaniumModule extends KrollModule
 			Log.e(TAG, e.getMessage(), e);
 		}
 	}
-}
 
+	@Kroll.method
+	public void dumpJavaScriptHeap()
+	{
+		Log.i(TAG, "Creating heap dump...");
+		Context context = TiApplication.getInstance().getApplicationContext();
+		File dumpFile = new File(context.getFilesDir(), "js_heap_dump");
+		KrollRuntime.getInstance().dumpHeap(dumpFile.getPath());
+		Log.i(TAG, "Heap dump created at: " + dumpFile.getAbsolutePath());
+	}
+}
