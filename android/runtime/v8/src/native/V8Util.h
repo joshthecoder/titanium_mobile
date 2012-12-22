@@ -146,6 +146,9 @@ public:
 	static bool constructorNameMatches(v8::Handle<v8::Object>, const char* name);
 	static bool isNaN(v8::Handle<v8::Value> value);
 	static void dispose();
+
+	// Take a snapshot of the heap and serialize it to a file.
+	static void dumpHeapSnapshot(const char* path);
 };
 
 }

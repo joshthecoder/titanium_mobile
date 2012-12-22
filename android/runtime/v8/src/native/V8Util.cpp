@@ -8,12 +8,14 @@
 #include <string.h>
 
 #include <v8.h>
-#include "V8Util.h"
+#include <v8-profiler.h>
+
+#include "AndroidUtil.h"
+#include "FileOutputStream.h"
 #include "JNIUtil.h"
 #include "JSException.h"
-#include "AndroidUtil.h"
 #include "TypeConverter.h"
-
+#include "V8Util.h"
 
 namespace titanium {
 using namespace v8;
@@ -177,12 +179,12 @@ Handle<String> V8Util::jsonStringify(Handle<Value> value)
 	Handle<Function> stringify = Handle<Function>::Cast(json->Get(String::New("stringify")));
 	Handle<Value> args[] = { value };
 	Handle<Value> result = stringify->Call(json, 1, args);
-    if (result.IsEmpty()) {
-        LOGE(TAG, "!!!! JSON.stringify() result is null/undefined.!!!");
-        return String::New("ERROR");
-    } else {
-        return result->ToString();
-    }
+	if (result.IsEmpty()) {
+		LOGE(TAG, "!!!! JSON.stringify() result is null/undefined.!!!");
+		return String::New("ERROR");
+	} else {
+		return result->ToString();
+	}
 }
 
 bool V8Util::constructorNameMatches(Handle<Object> object, const char* name)
@@ -222,4 +224,18 @@ void V8Util::dispose()
 	isNaNFunction = Persistent<Function>();
 }
 
+void V8Util::dumpHeapSnapshot(const char* path)
+{
+	HandleScope scope;
+
+	Local<String> title = String::New("Titanium JS heap");
+	const HeapSnapshot* snapshot = HeapProfiler::TakeSnapshot(title);
+
+	FileOutputStream out(path);
+	snapshot->Serialize(&out, HeapSnapshot::kJSON);
+
+	HeapProfiler::DeleteAllSnapshots();
 }
+
+}
+
