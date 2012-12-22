@@ -130,6 +130,12 @@ public class RhinoRuntime extends KrollRuntime implements ErrorReporter
 		}
 	}
 
+	@Override
+	public void dumpHeap(String path)
+	{
+		Log.e(TAG, "Heap snapshots not supported with Rhino runtime.");
+	}
+
 	// Enter the context for this runtime thread.
 	// When done with context, just call Context.exit().
 	public Context enterContext()

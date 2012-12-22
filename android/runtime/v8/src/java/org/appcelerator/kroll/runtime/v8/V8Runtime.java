@@ -153,6 +153,12 @@ public final class V8Runtime extends KrollRuntime implements Handler.Callback
 	}
 
 	@Override
+	public void dumpHeap(String path)
+	{
+		nativeDumpHeapSnapshot(path);
+	}
+
+	@Override
 	public boolean handleMessage(Message message)
 	{
 		switch (message.what) {
@@ -207,5 +213,6 @@ public final class V8Runtime extends KrollRuntime implements Handler.Callback
 	private native boolean nativeIdle();
 	private native void nativeDispose();
 	private native void nativeAddExternalCommonJsModule(String moduleName, KrollSourceCodeProvider sourceProvider);
+	private native void nativeDumpHeapSnapshot(String path);
 }
 

@@ -494,5 +494,11 @@ public abstract class KrollRuntime implements Handler.Callback
 	public abstract String getRuntimeName();
 	public abstract void initRuntime();
 	public abstract void initObject(KrollProxySupport proxy);
+
+	/**
+	 * Takes a snapshot of the JavaScript heap and writes it to a file.
+	 * @param path writes heap to the file at this path
+	 */
+	public abstract void dumpHeap(String path);
 }
 

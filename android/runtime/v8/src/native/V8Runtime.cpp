@@ -361,6 +361,18 @@ JNIEXPORT void JNICALL Java_org_appcelerator_kroll_runtime_v8_V8Runtime_nativeDi
 	while (!v8::V8::IdleNotification());
 }
 
+JNIEXPORT
+void JNICALL Java_org_appcelerator_kroll_runtime_v8_V8Runtime_nativeDumpHeapSnapshot(
+		JNIEnv *env, jobject runtime, jstring path)
+{
+	JNIScope jniScope(env);
+	LOGE(TAG, "Dumping...");
+
+	const char* pathChars = env->GetStringUTFChars(path, NULL);
+	V8Util::dumpHeapSnapshot(pathChars);
+	env->ReleaseStringUTFChars(path, pathChars);
+}
+
 jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
 	JNIUtil::javaVm = vm;
