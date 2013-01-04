@@ -761,7 +761,8 @@ beprovided to handle the result.
 	</#if>
 
 	<#-- Delete java proxy reference once done making the call. -->
-	if (!JavaObject::useGlobalRefs) {
+  // TODO: move flag
+	if (false) {
 		env->DeleteLocalRef(${jobjectVar});
 	}
 

@@ -229,7 +229,7 @@ Handle<Value> ${className}::${method.apiName}(const Arguments& args)
 	jvalue* jArguments = 0;
 	</#if>
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	<@Proxy.callJNIMethod method.args, method.hasInvocation, method.returnType,
 		"methodID", "javaProxy", "jArguments", (method.returnType != "void") ; hasResult, resultVar>
 
@@ -263,7 +263,7 @@ Handle<Value> ${className}::getter_${name}(Local<String> property, const Accesso
 
 	jvalue* jArguments = 0;
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	<@Proxy.callJNIMethod property.getMethodArgs, property.getHasInvocation, property.getReturnType,
 		"methodID", "javaProxy", "jArguments", (property.getReturnType != "void") ; hasResult, resultVar>
 
@@ -297,7 +297,7 @@ void ${className}::setter_${name}(Local<String> property, Local<Value> value, co
 
 	<@Proxy.verifyAndConvertArgument expr="value" index=0 info=typeInfo logOnly=true isOptional=false/>
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	<@Proxy.callJNIMethod property.setMethodArgs, property.setHasInvocation, property.setReturnType, "methodID", "javaProxy", "jArguments", false ;
 		hasResult, resultVar>
 	</@Proxy.callJNIMethod>
@@ -328,11 +328,12 @@ Handle<Value> ${className}::interceptor(Local<String> property, const AccessorIn
 		return Undefined();
 	}
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	jstring javaProperty = titanium::TypeConverter::jsStringToJavaString(property);
 	jobject jResult = (jobject) env->CallObjectMethod(javaProxy, methodID, javaProperty);
 
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move flag
+	if (false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 	env->DeleteLocalRef(javaProperty);
