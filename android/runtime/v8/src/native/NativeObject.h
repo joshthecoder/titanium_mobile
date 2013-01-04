@@ -11,7 +11,8 @@
 #define NATIVEOBJECT_H_
 
 #include <v8.h>
-#include <assert.h>
+
+#include "AndroidUtil.h"
 
 namespace titanium {
 
@@ -28,7 +29,7 @@ public:
 	virtual ~NativeObject()
 	{
 		if (!handle_.IsEmpty()) {
-			assert(handle_.IsNearDeath());
+			ASSERT(handle_.IsNearDeath());
 			handle_.ClearWeak();
 			handle_->SetInternalField(0, v8::Undefined());
 			handle_.Dispose();
@@ -44,8 +45,8 @@ public:
 	template<class T>
 	static inline T* Unwrap(v8::Handle<v8::Object> handle)
 	{
-		assert(!handle.IsEmpty());
-		assert(handle->InternalFieldCount() > 0);
+		ASSERT(!handle.IsEmpty());
+		ASSERT(handle->InternalFieldCount() > 0);
 
 		return static_cast<T*>(handle->GetPointerFromInternalField(0));
 	}
@@ -55,8 +56,8 @@ public:
 protected:
 	inline void Wrap(v8::Handle<v8::Object> handle)
 	{
-		assert(handle_.IsEmpty());
-		assert(handle->InternalFieldCount() > 0);
+		ASSERT(handle_.IsEmpty());
+		ASSERT(handle->InternalFieldCount() > 0);
 		handle_ = v8::Persistent<v8::Object>::New(handle);
 		handle_->SetPointerInInternalField(0, this);
 		MakeWeak();
@@ -74,7 +75,7 @@ protected:
 	 */
 	virtual void Ref()
 	{
-		assert(!handle_.IsEmpty());
+		ASSERT(!handle_.IsEmpty());
 		refs_++;
 		handle_.ClearWeak();
 	}
@@ -90,9 +91,9 @@ protected:
 	 */
 	virtual void Unref()
 	{
-		assert(!handle_.IsEmpty());
-		assert(!handle_.IsWeak());
-		assert(refs_ > 0);
+		ASSERT(!handle_.IsEmpty());
+		ASSERT(!handle_.IsWeak());
+		ASSERT(refs_ > 0);
 		if (--refs_ == 0) {
 			MakeWeak();
 		}
@@ -104,9 +105,9 @@ private:
 	static void WeakCallback(v8::Persistent<v8::Value> value, void *data)
 	{
 		NativeObject *obj = static_cast<NativeObject*>(data);
-		assert(value == obj->handle_);
-		assert(!obj->refs_);
-		assert(value.IsNearDeath());
+		ASSERT(value == obj->handle_);
+		ASSERT(!obj->refs_);
+		ASSERT(value.IsNearDeath());
 		delete obj;
 	}
 
