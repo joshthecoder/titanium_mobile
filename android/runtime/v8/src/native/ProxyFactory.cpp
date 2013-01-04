@@ -12,7 +12,6 @@
 #include <v8.h>
 
 #include "AndroidUtil.h"
-#include "JavaObject.h"
 #include "JNIUtil.h"
 #include "KrollBindings.h"
 #include "Proxy.h"

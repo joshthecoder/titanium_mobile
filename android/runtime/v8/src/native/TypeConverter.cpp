@@ -11,7 +11,7 @@
 #include "AndroidUtil.h"
 #include "TypeConverter.h"
 #include "JNIUtil.h"
-#include "JavaObject.h"
+#include "Proxy.h"
 #include "ProxyFactory.h"
 #include "V8Runtime.h"
 
@@ -499,10 +499,11 @@ jobject TypeConverter::jsValueToJavaObject(v8::Local<v8::Value> jsValue, bool *i
 	} else if (jsValue->IsObject()) {
 		v8::Handle<v8::Object> jsObject = jsValue->ToObject();
 
-		if (JavaObject::isJavaObject(jsObject)) {
-			*isNew = JavaObject::useGlobalRefs ? false : true;
-			JavaObject *javaObject = JavaObject::Unwrap<JavaObject>(jsObject);
-			return javaObject->getJavaObject();
+		if (Proxy::isProxy(jsObject)) {
+			//*isNew = JavaObject::useGlobalRefs ? false : true;
+			*isNew = false;
+			Proxy *proxy = NativeObject::Unwrap<Proxy>(jsObject);
+			return proxy->getJavaProxy();
 		} else {
 			v8::Handle<v8::Array> objectKeys = jsObject->GetOwnPropertyNames();
 			int numKeys = objectKeys->Length();
@@ -598,7 +599,6 @@ v8::Handle<v8::Value> TypeConverter::javaObjectToJsValue(jobject javaObject)
 
 			if (v8ObjectPointer != 0) {
 				Persistent<Object> v8Object = Persistent<Object>((Object *) v8ObjectPointer);
-				JavaObject *jo = NativeObject::Unwrap<JavaObject>(v8Object);
 				return v8Object;
 			}
 		}

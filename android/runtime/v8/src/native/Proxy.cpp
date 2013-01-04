@@ -10,7 +10,6 @@
 
 #include "AndroidUtil.h"
 #include "EventEmitter.h"
-#include "JavaObject.h"
 #include "JNIUtil.h"
 #include "JSException.h"
 #include "Proxy.h"
@@ -35,9 +34,63 @@ Persistent<String> Proxy::propertiesSymbol;
 Persistent<String> Proxy::lengthSymbol;
 Persistent<String> Proxy::sourceUrlSymbol;
 
-Proxy::Proxy(jobject javaProxy) :
-	JavaObject(javaProxy)
+Proxy::Proxy()
+	: javaProxy_(NULL)
 {
+}
+
+Proxy::Proxy(jobject javaProxy)
+{
+	if (javaProxy) {
+		setJavaProxy(javaProxy);
+	} else {
+		javaProxy_ = NULL;
+	}
+}
+
+Proxy::~Proxy()
+{
+	JNIEnv *env = JNIUtil::getJNIEnv();
+	env->DeleteGlobalRef(javaProxy_);
+}
+
+void Proxy::setJavaProxy(jobject proxy) {
+	ASSERT(proxy != NULL);
+	ASSERT(javaProxy_ == NULL);
+	JNIEnv *env = JNIUtil::getJNIEnv();
+	javaProxy_ = env->NewGlobalRef(proxy);
+}
+
+#define IMPLICIT_REF_SYMBOL String::NewSymbol("ti::implicitReferences")
+
+void Proxy::addImplicitReference(Handle<Value> child) {
+	HandleScope scope;
+
+	Local<Array> references = Local<Array>::Cast(handle_->GetHiddenValue(IMPLICIT_REF_SYMBOL));
+	if (references.IsEmpty()) {
+		references = Array::New();
+	}
+
+	references->Set(references->Length(), child);
+}
+
+void Proxy::removeImplicitReference(Handle<Value> child) {
+	HandleScope scope;
+
+	Local<Array> references = Local<Array>::Cast(handle_->GetHiddenValue(IMPLICIT_REF_SYMBOL));
+	if (references.IsEmpty()) {
+		return;
+	}
+
+	for (uint32_t i = 0; i < references->Length(); i++) {
+		Local<Value> ref = references->Get(i);
+		if (ref->StrictEquals(child)) {
+			references->Delete(i);
+			break;
+		}
+	}
+
+	LOGW(TAG, "Attempting to remove implicit references which was not found.");
 }
 
 void Proxy::bindProxy(Handle<Object> exports)
@@ -137,13 +190,14 @@ static void onPropertyChangedForProxy(Local<String> property, Local<Value> value
 	bool javaValueIsNew;
 	jobject javaValue = TypeConverter::jsValueToJavaObject(value, &javaValueIsNew);
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	env->CallVoidMethod(javaProxy,
 		JNIUtil::krollProxyOnPropertyChangedMethod,
 		javaProperty,
 		javaValue);
 
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move this flag into runtime
+	if (false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 
@@ -182,12 +236,13 @@ Handle<Value> Proxy::getIndexedProperty(uint32_t index, const AccessorInfo& info
 	}
 
 	Proxy* proxy = NativeObject::Unwrap<Proxy>(info.Holder());
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	jobject value = env->CallObjectMethod(javaProxy,
 		JNIUtil::krollProxyGetIndexedPropertyMethod,
 		index);
 
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move flag
+	if (!false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 
@@ -209,13 +264,14 @@ Handle<Value> Proxy::setIndexedProperty(uint32_t index, Local<Value> value, cons
 
 	bool javaValueIsNew;
 	jobject javaValue = TypeConverter::jsValueToJavaObject(value, &javaValueIsNew);
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	env->CallVoidMethod(javaProxy,
 		JNIUtil::krollProxySetIndexedPropertyMethod,
 		index,
 		javaValue);
 
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move flag
+	if (false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 	if (javaValueIsNew) {
@@ -237,11 +293,12 @@ Handle<Value> Proxy::hasListenersForEventType(const Arguments& args)
 	Local<String> eventType = args[0]->ToString();
 	Local<Boolean> hasListeners = args[1]->ToBoolean();
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	jobject krollObject = env->GetObjectField(javaProxy, JNIUtil::krollProxyKrollObjectField);
 	jstring javaEventType = TypeConverter::jsStringToJavaString(eventType);
 
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move flag
+	if (false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 
@@ -268,14 +325,14 @@ Handle<Value> Proxy::onEventFired(const Arguments& args)
 	Local<String> eventType = args[0]->ToString();
 	Local<Value> eventData = args[1];
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	jobject krollObject = env->GetObjectField(javaProxy, JNIUtil::krollProxyKrollObjectField);
 
 	jstring javaEventType = TypeConverter::jsStringToJavaString(eventType);
 	jobject javaEventData = TypeConverter::jsValueToJavaObject(eventData);
 
-
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move flag
+	if (false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 
@@ -327,7 +384,7 @@ Handle<Value> Proxy::proxyConstructor(const Arguments& args)
 	JNIUtil::logClassName("Create proxy: %s", javaClass);
 
 	Proxy* proxy = new Proxy(NULL);
-	proxy->wrap(jsProxy);
+	proxy->Wrap(jsProxy);
 
 	// If ProxyFactory::createV8Proxy invoked us, unwrap
 	// the pre-created Java proxy it sent.
@@ -337,7 +394,7 @@ Handle<Value> Proxy::proxyConstructor(const Arguments& args)
 		javaProxy = ProxyFactory::createJavaProxy(javaClass, jsProxy, args);
 		deleteRef = true;
 	}
-	proxy->attach(javaProxy);
+	proxy->setJavaProxy(javaProxy);
 
 	int length = args.Length();
 
@@ -458,11 +515,12 @@ Handle<Value> Proxy::proxyOnPropertiesChanged(const Arguments& args)
 		env->DeleteLocalRef(jChange);
 	}
 
-	jobject javaProxy = proxy->getJavaObject();
+	jobject javaProxy = proxy->getJavaProxy();
 	env->CallVoidMethod(javaProxy, JNIUtil::krollProxyOnPropertiesChangedMethod, jChanges);
 	env->DeleteLocalRef(jChanges);
 
-	if (!JavaObject::useGlobalRefs) {
+	// TODO: move flag
+	if (false) {
 		env->DeleteLocalRef(javaProxy);
 	}
 

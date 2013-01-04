@@ -12,7 +12,6 @@
 
 #include "AndroidUtil.h"
 #include "EventEmitter.h"
-#include "JavaObject.h"
 #include "JNIUtil.h"
 #include "JSException.h"
 #include "KrollBindings.h"
@@ -157,7 +156,8 @@ JNIEXPORT void JNICALL Java_org_appcelerator_kroll_runtime_v8_V8Runtime_nativeIn
 	V8::AddMessageListener(logV8Exception);
 	V8::SetCaptureStackTraceForUncaughtExceptions(true);
 
-	JavaObject::useGlobalRefs = useGlobalRefs;
+	// TODO: move flag to runtime
+	//JavaObject::useGlobalRefs = useGlobalRefs;
 	V8Runtime::debuggerEnabled = debuggerPort >= 0;
 	V8Runtime::DBG = DBG;
 

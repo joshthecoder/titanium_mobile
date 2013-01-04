@@ -10,11 +10,11 @@
 #include <jni.h>
 #include <v8.h>
 
-#include "JavaObject.h"
+#include "EventEmitter.h"
 
 namespace titanium {
 
-class Proxy : public JavaObject
+class Proxy : public EventEmitter
 {
 public:
 	enum {
@@ -29,7 +29,26 @@ public:
 	static v8::Persistent<v8::String> inheritSymbol, propertiesSymbol;
 	static v8::Persistent<v8::String> lengthSymbol, sourceUrlSymbol;
 
+	Proxy();
 	Proxy(jobject javaProxy);
+	virtual ~Proxy();
+
+	void setJavaProxy(jobject proxy);
+	inline jobject getJavaProxy() const {
+		ASSERT(javaProxy_ != NULL);
+		return javaProxy_;
+	}
+
+	void addImplicitReference(v8::Handle<v8::Value> child);
+	void removeImplicitReference(v8::Handle<v8::Value> child);
+
+	static inline bool isProxy(v8::Handle<v8::Object> object) {
+		return object->InternalFieldCount() > 0;
+	}
+
+	static inline Proxy* unwrap(v8::Handle<v8::Object> object) {
+		return Unwrap<Proxy>(object);
+	}
 
 	// Initialize the base proxy template
 	static void bindProxy(v8::Handle<v8::Object> exports);
@@ -97,23 +116,11 @@ public:
 		v8::Handle<v8::String> className,
 		v8::Handle<v8::Function> callback = v8::Handle<v8::Function>());
 
-	static inline Proxy* unwrap(v8::Handle<v8::Object> value)
-	{
-		if (!JavaObject::isJavaObject(value)) {
-			return NULL;
-		}
-
-		void *ptr = value->GetPointerFromInternalField(0);
-		if (!ptr) {
-			return NULL;
-		}
-
-		return static_cast<Proxy*>(ptr);
-	}
-
 	static void dispose();
 
 private:
+	jobject javaProxy_;
+
 	static v8::Handle<v8::Value> proxyConstructor(const v8::Arguments& args);
 	static v8::Handle<v8::Value> proxyOnPropertiesChanged(const v8::Arguments& args);
 };
