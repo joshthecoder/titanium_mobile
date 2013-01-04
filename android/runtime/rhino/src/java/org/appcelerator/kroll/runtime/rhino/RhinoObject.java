@@ -57,6 +57,12 @@ public class RhinoObject extends KrollObject
 	}
 
 	@Override
+	public void addImplicitReference(KrollObject child) { }
+
+	@Override
+	public void removeImplicitReference(KrollObject child) { }
+
+	@Override
 	protected void setProperty(String name, Object value)
 	{
 		((RhinoRuntime) KrollRuntime.getInstance()).enterContext();

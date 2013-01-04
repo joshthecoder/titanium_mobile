@@ -530,6 +530,8 @@ public abstract class TiViewProxy extends KrollProxy implements Handler.Callback
 			return;
 		}
 
+		addImplicitReference(child);
+
 		if (children == null) {
 			children = new ArrayList<TiViewProxy>();
 		}
@@ -576,6 +578,8 @@ public abstract class TiViewProxy extends KrollProxy implements Handler.Callback
 			Log.e(TAG, "Add called with null child");
 			return;
 		}
+
+		removeImplicitReference(child);
 
 		if (peekView() != null) {
 			if (TiApplication.isUIThread()) {

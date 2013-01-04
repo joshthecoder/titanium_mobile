@@ -64,8 +64,19 @@ public class V8Object extends KrollObject
 	}
 
 	@Override
+	public void addImplicitReference(KrollObject child) {
+		nativeAddImplicitReference(ptr, ((V8Object) child).ptr);
+	}
+
+	@Override
+	public void removeImplicitReference(KrollObject child) {
+		nativeRemoveImplicitReference(ptr, ((V8Object) child).ptr);
+	}
+
+	@Override
 	public void doRelease()
 	{
+		/*
 		if (ptr == 0) {
 			return;
 		}
@@ -74,6 +85,7 @@ public class V8Object extends KrollObject
 			ptr = 0;
 			KrollRuntime.suggestGC();
 		}
+		*/
 	}
 
 	@Override
@@ -96,6 +108,9 @@ public class V8Object extends KrollObject
 	protected static native void nativeInitObject(Class<?> proxyClass, Object proxyObject);
 	private static native Object nativeCallProperty(long ptr, String propertyName, Object[] args);
 	private static native boolean nativeRelease(long ptr);
+
+	private static native void nativeAddImplicitReference(long parent, long child);
+	private static native void nativeRemoveImplicitReference(long parent, long child);
 
 	private native void nativeSetProperty(long ptr, String name, Object value);
 	private native boolean nativeFireEvent(long ptr, String event, Object data);

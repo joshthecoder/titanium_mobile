@@ -153,6 +153,7 @@ Java_org_appcelerator_kroll_runtime_v8_V8Object_nativeRelease
 	ENTER_V8(V8Runtime::globalContext);
 	JNIScope jniScope(env);
 
+	/*
 	if (refPointer) {
 		Persistent<Object> handle((Object *)refPointer);
 		JavaObject *javaObject = NativeObject::Unwrap<JavaObject>(handle);
@@ -161,8 +162,32 @@ Java_org_appcelerator_kroll_runtime_v8_V8Object_nativeRelease
 			return true;
 		}
 	}
+	*/
 
 	return false;
+}
+
+JNIEXPORT void JNICALL
+Java_org_appcelerator_kroll_runtime_v8_V8Object_nativeAddImplicitReference
+	(JNIEnv *env, jclass clazz, jlong parent, jlong child)
+{
+	ENTER_V8(V8Runtime::globalContext);
+	JNIScope jniScope(env);
+
+	Proxy* parentProxy = NativeObject::Unwrap<Proxy>(Handle<Object>((Object*) parent));
+	LOGE(TAG, "parent: %p", parentProxy);
+	parentProxy->addImplicitReference(Handle<Value>((Value*) child));
+}
+
+JNIEXPORT void JNICALL
+Java_org_appcelerator_kroll_runtime_v8_V8Object_nativeRemoveImplicitReference
+	(JNIEnv *env, jclass clazz, jlong parent, jlong child)
+{
+	ENTER_V8(V8Runtime::globalContext);
+	JNIScope jniScope(env);
+
+	Proxy* parentProxy = NativeObject::Unwrap<Proxy>(Handle<Object>((Object*) parent));
+	parentProxy->removeImplicitReference(Handle<Value>((Value*) child));
 }
 
 JNIEXPORT void JNICALL

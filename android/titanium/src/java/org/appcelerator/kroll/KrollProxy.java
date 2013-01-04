@@ -599,6 +599,14 @@ public class KrollProxy implements Handler.Callback, KrollProxySupport
 		msg.sendToTarget();
 	}
 
+	public void addImplicitReference(KrollProxy child) {
+		getKrollObject().addImplicitReference(child.getKrollObject());
+	}
+
+	public void removeImplicitReference(KrollProxy child) {
+		getKrollObject().removeImplicitReference(child.getKrollObject());
+	}
+
 	protected void doSetProperty(String name, Object value)
 	{
 		getKrollObject().setProperty(name, value);

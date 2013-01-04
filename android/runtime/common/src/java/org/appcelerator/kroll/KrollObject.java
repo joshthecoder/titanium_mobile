@@ -109,6 +109,9 @@ public abstract class KrollObject implements Handler.Callback
 	 */
 	public abstract Object callProperty(String propertyName, Object[] args);
 
+	public abstract void addImplicitReference(KrollObject child);
+	public abstract void removeImplicitReference(KrollObject child);
+
 	/**
 	 * Releases this KrollObject, that is, removes event listeners and any associated native views or content.	
 	 */
