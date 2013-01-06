@@ -39,6 +39,7 @@ public final class V8Runtime extends KrollRuntime implements Handler.Callback
 	private ArrayList<String> loadedLibs = new ArrayList<String>();
 	private AtomicBoolean shouldGC = new AtomicBoolean(false);
 	private long lastV8Idle;
+	private IdleHandler idleHandler;
 
 	@Override
 	public void initRuntime()
@@ -72,28 +73,31 @@ public final class V8Runtime extends KrollRuntime implements Handler.Callback
 		loadExternalModules();
 		loadExternalCommonJsModules();
 
-		Looper.myQueue().addIdleHandler(new IdleHandler() {
-			@Override
-			public boolean queueIdle()
-			{
-				boolean willGC = shouldGC.getAndSet(false);
-				if (!willGC) {
-					// This means we haven't specifically been told to do
-					// a V8 GC (which is just a call to nativeIdle()), but nevertheless
-					// if more than the recommended time has passed since the last
-					// call to nativeIdle(), we'll want to do it anyways.
-					willGC = ((System.currentTimeMillis() - lastV8Idle) > MAX_V8_IDLE_INTERVAL);
-				}
-				if (willGC) {
-					boolean gcWantsMore = !nativeIdle();
-					lastV8Idle = System.currentTimeMillis();
-					if (gcWantsMore) {
-						shouldGC.set(true);
+		if (idleHandler == null) {
+			idleHandler = new IdleHandler() {
+				@Override
+				public boolean queueIdle()
+				{
+					boolean willGC = shouldGC.getAndSet(false);
+					if (!willGC) {
+						// This means we haven't specifically been told to do
+						// a V8 GC (which is just a call to nativeIdle()), but nevertheless
+						// if more than the recommended time has passed since the last
+						// call to nativeIdle(), we'll want to do it anyways.
+						willGC = ((System.currentTimeMillis() - lastV8Idle) > MAX_V8_IDLE_INTERVAL);
 					}
+					if (willGC) {
+						boolean gcWantsMore = !nativeIdle();
+						lastV8Idle = System.currentTimeMillis();
+						if (gcWantsMore) {
+							shouldGC.set(true);
+						}
+					}
+					return true;
 				}
-				return true;
-			}
-		});
+			};
+			Looper.myQueue().addIdleHandler(idleHandler);
+		}
 	}
 
 	private void loadExternalModules()
