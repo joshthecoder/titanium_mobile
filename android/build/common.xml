@@ -125,7 +125,8 @@ Common ant tasks and macros for building Android-based Titanium modules and proj
 
 	<path id="android">
 		<pathelement path="${android.jar}"/>
-		<pathelement path="${google.apis}/libs/maps.jar"/>
+		<pathelement path="${oogle.apis}/libs/maps.jar"/>
+		<pathelement path="${android.sdk}/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar" />
 	</path>
 
 	<path id="kroll.apt.path">
