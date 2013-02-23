@@ -770,7 +770,7 @@ properties:
         properties.
     type: Number
     permission: read-only
-    platforms: [android, iphone, ipad]
+    platforms: [android, blackberry, iphone, ipad]
 
   - name: KEYBOARD_DECIMAL_PAD
     summary: Use a keyboard with decimal numbers only, with the pad keyboard layout.
@@ -810,7 +810,7 @@ properties:
         properties.
     type: Number
     permission: read-only
-    platforms: [android, iphone, ipad]
+    platforms: [android, blackberry, iphone, ipad]
     
   - name: KEYBOARD_NUMBERS_PUNCTUATION
     summary: Use a keyboard with numbers and punctuation only, with the standard keyboard layout.
@@ -819,7 +819,7 @@ properties:
         properties.
     type: Number
     permission: read-only
-    platforms: [android, iphone, ipad]
+    platforms: [android, blackberry, iphone, ipad]
     
   - name: KEYBOARD_NUMBER_PAD
     summary: Use a keyboard with a number pad only, with the pad keyboard layout.
