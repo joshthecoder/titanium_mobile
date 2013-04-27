@@ -9,13 +9,13 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-V8_VERSION=3.9.24.29
+V8_VERSION=3.17.16.0
 LIBV8_DIR := ../../../../../../dist/android/libv8/$(V8_VERSION)
 
-LIBV8 := libv8
+LIBV8 := libv8_snapshot
 
 ifeq ($(NDK_DEBUG),1)
-LIBV8 := libv8_g
+LIBV8 := libv8_snapshot_g
 endif
 
 LIBV8_MODE := release
@@ -24,7 +24,7 @@ ifeq ($(NDK_DEBUG),1)
 LIBV8_MODE := debug
 endif
 
-LOCAL_MODULE := libv8
+LOCAL_MODULE := libv8_snapshot
 LOCAL_SRC_FILES := $(LIBV8_DIR)/$(LIBV8_MODE)/libs/$(TARGET_ARCH_ABI)/$(LIBV8).a
 LOCAL_EXPORT_C_INCLUDES := $(TI_DIST_DIR)/android/libv8/$(V8_VERSION)/$(LIBV8_MODE)/include
 

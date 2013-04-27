@@ -28,7 +28,9 @@ void WrappedContext::Initialize(Handle<Object> target)
 {
 	HandleScope scope;
 
-	global_template = Persistent<ObjectTemplate>::New(ObjectTemplate::New());
+	global_template = Persistent<ObjectTemplate>::New(
+		V8Runtime::isolate,
+		ObjectTemplate::New());
 	global_template->SetInternalFieldCount(1);
 }
 
@@ -52,7 +54,7 @@ WrappedContext::~WrappedContext()
 {
 	if (!context_.IsEmpty()) {
 		context_->DetachGlobal();
-		context_.Dispose();
+		context_.Dispose(V8Runtime::isolate);
 		context_.Clear();
 	}
 }
@@ -66,7 +68,9 @@ void WrappedScript::Initialize(Handle<Object> target)
 {
 	HandleScope scope;
 
-	constructor_template = Persistent<FunctionTemplate>::New(FunctionTemplate::New(WrappedScript::New));
+	constructor_template = Persistent<FunctionTemplate>::New(
+		V8Runtime::isolate,
+		FunctionTemplate::New(WrappedScript::New));
 	constructor_template->InstanceTemplate()->SetInternalFieldCount(1);
 	constructor_template->SetClassName(String::NewSymbol("Script"));
 
@@ -97,7 +101,7 @@ Handle<Value> WrappedScript::New(const Arguments& args)
 
 WrappedScript::~WrappedScript()
 {
-	script_.Dispose();
+	script_.Dispose(V8Runtime::isolate);
 }
 
 Handle<Value> WrappedScript::CreateContext(const Arguments& args)
@@ -265,7 +269,7 @@ Handle<Value> WrappedScript::EvalMachine(const Arguments& args)
 			if (context_flag == newContext) {
 				context->DetachGlobal();
 				context->Exit();
-				context.Dispose();
+				context.Dispose(V8Runtime::isolate);
 			}
 			return Undefined();
 		}
@@ -274,7 +278,7 @@ Handle<Value> WrappedScript::EvalMachine(const Arguments& args)
 		if (!n_script) {
 			return ThrowException(Exception::Error(String::New("Must be called as a method of Script.")));
 		}
-		n_script->script_ = Persistent<Script>::New(script);
+		n_script->script_ = Persistent<Script>::New(V8Runtime::isolate, script);
 		result = args.This();
 	}
 
@@ -282,7 +286,7 @@ Handle<Value> WrappedScript::EvalMachine(const Arguments& args)
 		// Clean up, clean up, everybody everywhere!
 		context->DetachGlobal();
 		context->Exit();
-		context.Dispose();
+		context.Dispose(V8Runtime::isolate);
 	} else if (context_flag == userContext) {
 		// Exit the passed in context.
 		context->Exit();
@@ -304,8 +308,8 @@ void ScriptsModule::Initialize(Handle<Object> target)
 
 void ScriptsModule::Dispose()
 {
-	WrappedScript::constructor_template.Dispose();
-	WrappedContext::global_template.Dispose();
+	WrappedScript::constructor_template.Dispose(V8Runtime::isolate);
+	WrappedContext::global_template.Dispose(V8Runtime::isolate);
 }
 
 }

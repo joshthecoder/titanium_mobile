@@ -13,6 +13,8 @@
 #include <v8.h>
 #include <assert.h>
 
+#include "V8Runtime.h"
+
 namespace titanium {
 
 class ProxyFactory;
@@ -29,9 +31,9 @@ public:
 	{
 		if (!handle_.IsEmpty()) {
 			assert(handle_.IsNearDeath());
-			handle_.ClearWeak();
+			handle_.ClearWeak(V8Runtime::isolate);
 			handle_->SetInternalField(0, v8::Undefined());
-			handle_.Dispose();
+			handle_.Dispose(V8Runtime::isolate);
 			handle_.Clear();
 		}
 	}
@@ -47,7 +49,7 @@ public:
 		assert(!handle.IsEmpty());
 		assert(handle->InternalFieldCount() > 0);
 
-		return static_cast<T*>(handle->GetPointerFromInternalField(0));
+		return static_cast<T*>(handle->GetAlignedPointerFromInternalField(0));
 	}
 
 	v8::Persistent<v8::Object> handle_; // ro
@@ -57,15 +59,15 @@ protected:
 	{
 		assert(handle_.IsEmpty());
 		assert(handle->InternalFieldCount() > 0);
-		handle_ = v8::Persistent<v8::Object>::New(handle);
-		handle_->SetPointerInInternalField(0, this);
+		handle_ = v8::Persistent<v8::Object>::New(V8Runtime::isolate, handle);
+		handle_->SetAlignedPointerInInternalField(0, this);
 		MakeWeak();
 	}
 
 	inline void MakeWeak(void)
 	{
-		handle_.MakeWeak(this, WeakCallback);
-		handle_.MarkIndependent();
+		handle_.MakeWeak(V8Runtime::isolate, this, WeakCallback);
+		handle_.MarkIndependent(V8Runtime::isolate);
 	}
 
 	/* Ref() marks the object as being attached to an event loop.
@@ -76,7 +78,7 @@ protected:
 	{
 		assert(!handle_.IsEmpty());
 		refs_++;
-		handle_.ClearWeak();
+		handle_.ClearWeak(V8Runtime::isolate);
 	}
 
 	/* Unref() marks an object as detached from the event loop.  This is its
@@ -101,7 +103,7 @@ protected:
 	int refs_; // ro
 
 private:
-	static void WeakCallback(v8::Persistent<v8::Value> value, void *data)
+	static void WeakCallback(v8::Isolate* isolate, v8::Persistent<v8::Value> value, void *data)
 	{
 		NativeObject *obj = static_cast<NativeObject*>(data);
 		assert(value == obj->handle_);

@@ -145,7 +145,7 @@ void KrollBindings::addExternalLookup(LookupFunction lookup)
 Handle<Object> KrollBindings::getBinding(Handle<String> binding)
 {
 	if (bindingCache.IsEmpty()) {
-		bindingCache = Persistent<Object>::New(Object::New());
+		bindingCache = Persistent<Object>::New(V8Runtime::isolate, Object::New());
 	}
 
 	String::Utf8Value bindingValue(binding);
@@ -240,7 +240,7 @@ void KrollBindings::dispose()
 		}
 	}
 
-	bindingCache.Dispose();
+	bindingCache.Dispose(V8Runtime::isolate);
 	bindingCache = Persistent<Object>();
 }
 

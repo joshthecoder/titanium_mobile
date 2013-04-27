@@ -103,7 +103,7 @@ public:
 			return NULL;
 		}
 
-		void *ptr = value->GetPointerFromInternalField(0);
+		void *ptr = value->GetAlignedPointerFromInternalField(0);
 		if (!ptr) {
 			return NULL;
 		}
