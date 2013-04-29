@@ -9,7 +9,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-V8_VERSION=3.17.16.0
+V8_VERSION=3.17.16
 LIBV8_DIR := ../../../../../../dist/android/libv8/$(V8_VERSION)
 
 LIBV8 := libv8_snapshot
